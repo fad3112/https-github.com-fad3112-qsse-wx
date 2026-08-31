@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QSSE-Wx · AGEROUTE Sénégal — Connexion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2L28 7v10c0 7-6 11-12 13C10 28 4 24 4 17V7z' fill='%231B3A8C'/><text x='16' y='21' text-anchor='middle' fill='%23F5A623' font-size='8' font-weight='700' font-family='Inter,sans-serif' letter-spacing='1'>QSSE</text></svg>">
+  <style>
+    body { font-family: var(--font-sans); font-size: 13px; margin: 0; }
+  </style>
+</head>
+<body>
+<div class="login-body">
+  <div class="login-card">
+
+    <div class="login-logo">
+      <svg class="login-logo-mark" viewBox="0 0 48 56" width="72" height="84" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sf" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2A52C9"/>
+            <stop offset="100%" stop-color="#1B3A8C"/>
+          </linearGradient>
+          <linearGradient id="sf-shine" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(255,255,255,.28)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </linearGradient>
+        </defs>
+        <!-- ombre portée -->
+        <path d="M24 3L43 10V30C43 44 24 52 24 52C24 52 5 44 5 30V10Z" fill="#000" opacity=".18" transform="translate(1.5,2.5)"/>
+        <!-- corps du bouclier -->
+        <path d="M24 3L43 10V30C43 44 24 52 24 52C24 52 5 44 5 30V10Z" fill="url(#sf)"/>
+        <!-- reflet haut -->
+        <path d="M24 3L43 10V22C36 19 24 17 24 17C24 17 12 19 5 22V10Z" fill="url(#sf-shine)"/>
+        <!-- bordure or extérieure -->
+        <path d="M24 3L43 10V30C43 44 24 52 24 52C24 52 5 44 5 30V10Z" fill="none" stroke="#F5A623" stroke-width="2"/>
+        <!-- liseré or intérieur -->
+        <path d="M24 6L40 12V30C40 42 24 49 24 49C24 49 8 42 8 30V12Z" fill="none" stroke="#F5A623" stroke-width=".6" opacity=".35"/>
+        <!-- texte QSSE -->
+        <text x="24" y="29" text-anchor="middle" dominant-baseline="central" fill="#F5A623" font-size="9" font-weight="800" font-family="Inter,sans-serif" letter-spacing="2.5">QSSE</text>
+      </svg>
+      <div class="login-logo-text">
+        <div class="login-logo-name">QSSE-Wx</div>
+        <div class="login-logo-sub">AGEROUTE Sénégal</div>
+      </div>
+    </div>
+
+    <div class="login-err" id="ERR"></div>
+
+    <div class="fg">
+      <label class="fl">Email</label>
+      <input class="fc" type="email" id="L-EMAIL" placeholder="prenom.nom@ageroute.sn"
+             autocomplete="email"
+             style="height:40px;font-size:13px">
+    </div>
+    <div class="fg">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <label class="fl">Mot de passe</label>
+        <a href="#" onclick="openForgot();return false" style="font-size:11px;color:var(--color-text-tertiary);text-decoration:none">Mot de passe oublié ?</a>
+      </div>
+      <div style="position:relative">
+        <input class="fc" type="password" id="L-PWD" placeholder="••••••••"
+               autocomplete="current-password"
+               style="padding-right:38px;height:40px;font-size:13px"
+               onkeydown="if(event.key==='Enter')doLogin()">
+        <button type="button" onclick="togglePwd()" id="EYE-BTN"
+          style="position:absolute;right:9px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--color-text-tertiary);padding:2px">
+          <i class="ti ti-eye" id="EYE" style="font-size:15px"></i>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn btn-p" id="LOGIN-BTN"
+            style="width:100%;justify-content:center;padding:10px 0;font-size:13px;border-radius:var(--border-radius-md)"
+            onclick="doLogin()">
+      <i class="ti ti-login" id="BTN-IC"></i>
+      <span id="BTN-TXT">Se connecter</span>
+    </button>
+
+    <div id="RECENT-WRAP" style="margin-top:22px;padding-top:16px;border-top:1px solid var(--color-border-tertiary);display:none">
+      <div style="font-size:10px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:9px">Connexions récentes</div>
+      <div id="RECENT-LIST" style="display:flex;flex-direction:column;gap:5px"></div>
+    </div>
+
+    <div style="margin-top:18px;text-align:center;font-size:10px;color:var(--color-text-tertiary)">
+      QSSE-Wx v2.0 · <span style="color:var(--gold);font-weight:600">AGEROUTE Sénégal</span> · Méthodologie 8D
+    </div>
+  </div>
+</div>
+
+<div id="FORGOT-OVERLAY" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center">
+  <div class="login-card" style="width:340px;max-width:90vw">
+    <div style="font-size:14px;font-weight:700;color:var(--color-text-primary);margin-bottom:6px">Mot de passe oublié</div>
+    <div id="FORGOT-INTRO" style="font-size:12px;color:var(--color-text-tertiary);margin-bottom:14px">
+      Saisissez votre email professionnel : si un compte existe, un lien de réinitialisation vous sera envoyé.
+    </div>
+    <div id="FORGOT-MSG" style="display:none;font-size:12px;border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:12px"></div>
+    <div class="fg" id="FORGOT-FG">
+      <label class="fl">Email</label>
+      <input class="fc" type="email" id="F-EMAIL" placeholder="prenom.nom@ageroute.sn"
+             autocomplete="email" style="height:40px;font-size:13px"
+             onkeydown="if(event.key==='Enter')doForgot()">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <button class="btn btn-sm" onclick="closeForgot()" style="flex:1;justify-content:center;padding:9px 0">Annuler</button>
+      <button class="btn btn-p" id="FORGOT-BTN" onclick="doForgot()" style="flex:1;justify-content:center;padding:9px 0">
+        <i class="ti ti-send" id="FORGOT-IC"></i>
+        <span id="FORGOT-TXT">Envoyer le lien</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ROLE_LABELS = {
+  admin:'Administrateur', direction:'Direction', resp_qsse:'Resp. QSSE',
+  chef_chantier:'Chef chantier', resp_domaine:'Resp. domaine', metier:'Métier'
+};
+
+function fill(email) {
+  document.getElementById('L-EMAIL').value = email;
+  document.getElementById('L-PWD').value = '';
+  document.getElementById('ERR').style.display = 'none';
+  document.getElementById('L-PWD').focus();
+}
+
+async function loadRecentUsers() {
+  try {
+    const res = await fetch('/api/recent-users');
+    const users = await res.json();
+    if (!users.length) return;
+    const list = document.getElementById('RECENT-LIST');
+    list.innerHTML = users.map(u => {
+      const initials = (u.prenom[0] + u.nom[0]).toUpperCase();
+      const name = u.prenom + ' ' + u.nom;
+      const role = ROLE_LABELS[u.role] || u.role;
+      const avatar = u.photo_url
+        ? `<img src="${u.photo_url}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0">`
+        : `<div class="ava" style="background:${u.avatar_color};width:28px;height:28px;font-size:9px;flex-shrink:0">${initials}</div>`;
+      const ago = u.derniere_cnx ? `<div style="font-size:9px;color:var(--color-text-tertiary);margin-top:1px">${u.derniere_cnx}</div>` : '';
+      return `<button class="btn btn-sm" onclick="fill('${u.email || ''}')" style="justify-content:flex-start;gap:10px;padding:7px 10px">
+        ${avatar}
+        <div style="text-align:left;min-width:0">
+          <div style="font-weight:600;font-size:11px">${name}</div>
+          <div style="font-size:10px;color:var(--color-text-tertiary)">${role}</div>
+          ${ago}
+        </div>
+      </button>`;
+    }).join('');
+    document.getElementById('RECENT-WRAP').style.display = 'block';
+  } catch(e) {}
+}
+
+loadRecentUsers();
+
+function togglePwd() {
+  const i = document.getElementById('L-PWD');
+  const e = document.getElementById('EYE');
+  if (i.type === 'password') { i.type = 'text'; e.classList.replace('ti-eye','ti-eye-off'); }
+  else { i.type = 'password'; e.classList.replace('ti-eye-off','ti-eye'); }
+}
+
+async function doLogin() {
+  const btn  = document.getElementById('LOGIN-BTN');
+  const txt  = document.getElementById('BTN-TXT');
+  const ic   = document.getElementById('BTN-IC');
+  const err  = document.getElementById('ERR');
+  const email = document.getElementById('L-EMAIL').value.trim();
+  const pwd   = document.getElementById('L-PWD').value;
+  err.style.display = 'none';
+  btn.disabled = true;
+  txt.textContent = 'Connexion…';
+  ic.className = 'ti ti-loader-2';
+  ic.style.animation = 'spin .7s linear infinite';
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email, password: pwd}),
+      credentials: 'same-origin',
+    });
+    const data = await res.json();
+    if (data.ok) { window.location = '/'; return; }
+    err.textContent = data.error || 'Identifiants incorrects';
+    err.style.display = 'block';
+  } catch(e) {
+    err.textContent = 'Erreur réseau — réessayez';
+    err.style.display = 'block';
+  }
+  btn.disabled = false;
+  txt.textContent = 'Se connecter';
+  ic.className = 'ti ti-login';
+  ic.style.animation = '';
+}
+
+function openForgot() {
+  document.getElementById('F-EMAIL').value = document.getElementById('L-EMAIL').value.trim();
+  document.getElementById('FORGOT-MSG').style.display = 'none';
+  document.getElementById('FORGOT-INTRO').style.display = 'block';
+  document.getElementById('FORGOT-FG').style.display = 'block';
+  document.getElementById('FORGOT-OVERLAY').style.display = 'flex';
+  document.getElementById('F-EMAIL').focus();
+}
+
+function closeForgot() {
+  document.getElementById('FORGOT-OVERLAY').style.display = 'none';
+}
+
+async function doForgot() {
+  const btn = document.getElementById('FORGOT-BTN');
+  const txt = document.getElementById('FORGOT-TXT');
+  const ic = document.getElementById('FORGOT-IC');
+  const msg = document.getElementById('FORGOT-MSG');
+  const email = document.getElementById('F-EMAIL').value.trim();
+  if (!email) return;
+  btn.disabled = true;
+  txt.textContent = 'Envoi…';
+  ic.className = 'ti ti-loader-2';
+  ic.style.animation = 'spin .7s linear infinite';
+  try {
+    const res = await fetch('/api/forgot-password', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email}),
+    });
+    const data = await res.json();
+    msg.style.display = 'block';
+    if (data.ok) {
+      msg.style.background = 'var(--color-success-bg,#e6f4ea)';
+      msg.style.color = 'var(--color-success-text,#1e7b34)';
+      msg.textContent = data.message || 'Si un compte existe, un email a été envoyé.';
+      document.getElementById('FORGOT-INTRO').style.display = 'none';
+      document.getElementById('FORGOT-FG').style.display = 'none';
+    } else {
+      msg.style.background = 'var(--color-danger-bg,#fdecea)';
+      msg.style.color = 'var(--color-danger-text,#b3261e)';
+      msg.textContent = data.error || 'Une erreur est survenue';
+    }
+  } catch (e) {
+    msg.style.display = 'block';
+    msg.style.background = 'var(--color-danger-bg,#fdecea)';
+    msg.style.color = 'var(--color-danger-text,#b3261e)';
+    msg.textContent = 'Erreur réseau — réessayez';
+  }
+  btn.disabled = false;
+  txt.textContent = 'Envoyer le lien';
+  ic.className = 'ti ti-send';
+  ic.style.animation = '';
+}
+</script>
+</body>
+</html>

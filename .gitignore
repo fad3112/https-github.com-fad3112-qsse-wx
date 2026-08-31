@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+server_out.txt
+server_err.txt
+.claude/settings.local.json

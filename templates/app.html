@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QSSE-Wx · AGEROUTE Sénégal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2L28 7v10c0 7-6 11-12 13C10 28 4 24 4 17V7z' fill='%231B3A8C'/><text x='16' y='21' text-anchor='middle' fill='%23F5A623' font-size='8' font-weight='700' font-family='Inter,sans-serif' letter-spacing='1'>QSSE</text></svg>">
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
+</head>
+<body>
+<div id="STATUS-BAR" class="vert"></div>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sb" id="SB">
+  <div class="sb-top">
+    <svg class="brand-mark" viewBox="0 0 36 36" width="52" height="52" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bm-shine" cx="40%" cy="20%" r="65%">
+          <stop offset="0%" stop-color="rgba(255,255,255,.22)"/>
+          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </radialGradient>
+      </defs>
+      <!-- anneau extérieur doré -->
+      <circle cx="18" cy="18" r="17" fill="none" stroke="#F5A623" stroke-width="1.4" opacity=".55"/>
+      <!-- ombre bouclier -->
+      <path d="M18 5L30 9.5v10C30 26 25 30 18 32 11 30 6 26 6 19.5V9.5z" fill="#060D1A" opacity=".5" transform="translate(.5,1)"/>
+      <!-- bouclier principal -->
+      <path d="M18 5L30 9.5v10C30 26 25 30 18 32 11 30 6 26 6 19.5V9.5z" fill="#1B3A8C"/>
+      <!-- reflet lumineux -->
+      <path d="M18 5L30 9.5v10C30 26 25 30 18 32 11 30 6 26 6 19.5V9.5z" fill="url(#bm-shine)"/>
+      <!-- bordure dorée -->
+      <path d="M18 5L30 9.5v10C30 26 25 30 18 32 11 30 6 26 6 19.5V9.5z" fill="none" stroke="#F5A623" stroke-width="1.2" opacity=".85"/>
+      <!-- texte QSSE -->
+      <text x="18" y="19" text-anchor="middle" dominant-baseline="central" fill="#F5A623" font-size="5.5" font-weight="800" font-family="Inter,sans-serif" letter-spacing=".5">QSSE</text>
+    </svg>
+    <div class="sb-top-text">
+      <span class="sb-brand">QSSE-Wx</span>
+      <span class="sb-sub-inline"><span style="color:var(--gold)">AGEROUTE</span> Sénégal</span>
+    </div>
+  </div>
+
+  <div class="sb-nav">
+    <div class="nav-grp" data-i18n="nav.grp.pilotage">Pilotage</div>
+    <div class="nav-item on" data-page="dashboard" onclick="goTo('dashboard','Tableau de bord')"><i class="ti ti-layout-dashboard"></i><span class="nav-lbl">Tableau de bord</span></div>
+    <div class="nav-item" data-page="indicateurs" onclick="goTo('indicateurs','Indicateurs — 120 référentiels')"><i class="ti ti-chart-line"></i><span class="nav-lbl">Indicateurs</span><span class="nav-bdg" id="nb-nc">—</span></div>
+    <div class="nav-item" data-page="saisie" onclick="goTo('saisie','Saisie terrain')"><i class="ti ti-pencil"></i><span class="nav-lbl">Saisie terrain</span></div>
+    <div class="nav-item" data-page="actions" onclick="goTo('actions','Plan d\'actions')"><i class="ti ti-checklist"></i><span class="nav-lbl">Plan d'actions</span><span class="nav-bdg" id="nb-ret">—</span></div>
+    <div class="nav-item" data-page="incidents" onclick="goTo('incidents','Registre des incidents')"><i class="ti ti-alert-triangle"></i><span class="nav-lbl">Incidents</span></div>
+
+    <div class="nav-grp" data-i18n="nav.grp.decision">Décision & Rapports</div>
+    <div class="nav-item" data-page="decision" onclick="goTo('decision','Matrice de décision 8D')"><i class="ti ti-circle-check"></i><span class="nav-lbl">Matrice 8D</span></div>
+    <div class="nav-item" data-page="revue" onclick="goTo('revue','Revue hebdomadaire 8D')"><i class="ti ti-clipboard-check"></i><span class="nav-lbl">Revue hebdo. 8D</span></div>
+    <div class="nav-item" data-page="reporting" onclick="goTo('reporting','Reporting & Exports')"><i class="ti ti-file-description"></i><span class="nav-lbl">Reporting</span></div>
+
+    <div class="nav-grp" data-i18n="nav.grp.admin">Administration</div>
+    <div class="nav-item" data-page="users" onclick="goTo('users','Utilisateurs & Rôles')"><i class="ti ti-users"></i><span class="nav-lbl">Utilisateurs</span></div>
+    <div class="nav-item" data-page="notifications" onclick="goTo('notifications','Notifications & Alertes')"><i class="ti ti-bell"></i><span class="nav-lbl">Notifications</span><span class="nav-bdg" id="nb-notif" style="display:none"></span></div>
+    <div class="nav-item" data-page="parametres" onclick="goTo('parametres','Paramètres')"><i class="ti ti-settings"></i><span class="nav-lbl">Paramètres</span></div>
+  </div>
+
+  <div class="sb-footer">
+    {% if user.photo_url %}
+    <img src="{{ user.photo_url }}" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1.5px solid rgba(255,255,255,.15)" id="SB-AVA-IMG">
+    {% else %}
+    <div class="ava" style="background:{{ user.avatar_color }};width:28px;height:28px" id="SB-AVA-TXT">{{ user.initials }}</div>
+    {% endif %}
+    <div class="sf-info">
+      <div style="font-size:11px;font-weight:500;color:rgba(255,255,255,.85)">{{ user.prenom }} {{ user.nom }}</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.38)">{{ user.role_label }}</div>
+    </div>
+    <i class="ti ti-logout" style="margin-left:auto;font-size:15px;color:rgba(255,255,255,.3);cursor:pointer;flex-shrink:0" onclick="doLogout()" title="Déconnexion"></i>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-l">
+      <button class="btn btn-icon" onclick="toggleSb()"><i class="ti ti-menu-2"></i></button>
+      <span class="tb-title" id="PT">Tableau de bord</span>
+    </div>
+    <div class="tb-r">
+      <div style="position:relative" class="hide-sm">
+        <i class="ti ti-search" style="position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--color-text-tertiary);pointer-events:none;z-index:1"></i>
+        <input id="GSEARCH" type="text" class="finp" placeholder="Recherche globale…" style="width:200px;padding-left:30px;padding-right:10px" oninput="globalSearch(this.value)" onblur="setTimeout(()=>document.getElementById('GRESULTS').style.display='none',200)">
+        <div id="GRESULTS" style="display:none;position:absolute;top:36px;left:0;right:0;background:var(--color-background-primary);border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);box-shadow:var(--shadow-lg);z-index:200;max-height:300px;overflow-y:auto"></div>
+      </div>
+      <div class="chip chip-r hide-sm" id="SCORE-CHIP" onclick="goTo('decision','Matrice de décision 8D')" style="cursor:pointer"><div class="feu-dot-sm"></div><span id="TB-SCORE">8D · …</span></div>
+      <span class="chip hide-sm" id="SEM-CHIP">Sem. — · 2025</span>
+      <span class="chip chip-i" title="AGEROUTE Sénégal">AGR</span>
+      <button class="btn btn-icon" id="THEME-BTN" onclick="toggleTheme()" title="Thème sombre / clair" style="color:var(--color-text-secondary)"><i class="ti ti-moon" id="THEME-ICO"></i></button>
+      <button class="btn btn-icon" id="LANG-BTN" onclick="toggleLang()" title="Switch language / Changer de langue" style="font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--color-text-secondary);min-width:28px">EN</button>
+      <input type="file" id="AVA-INPUT" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+      <div style="position:relative">
+        {% if user.photo_url %}
+        <img src="{{ user.photo_url }}" alt="" id="AVA-BTN" style="width:28px;height:28px;border-radius:50%;object-fit:cover;cursor:pointer;border:1.5px solid var(--color-border-secondary)" onclick="toggleProfile()" title="Mon profil">
+        {% else %}
+        <div class="ava" id="AVA-BTN" style="background:{{ user.avatar_color }};width:28px;height:28px;cursor:pointer" onclick="toggleProfile()" title="Mon profil">{{ user.initials }}</div>
+        {% endif %}
+        <div id="PROFILE-DROP" style="display:none;position:absolute;right:0;top:38px;width:240px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;overflow:hidden">
+          <div style="padding:14px 14px 10px;display:flex;align-items:center;gap:10px;border-bottom:0.5px solid var(--color-border-tertiary)">
+            <div style="position:relative;flex-shrink:0;cursor:pointer" onclick="document.getElementById('AVA-INPUT').click()" title="Changer la photo">
+              {% if user.photo_url %}
+              <img src="{{ user.photo_url }}" alt="" id="PRF-AVA-IMG" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:1.5px solid var(--color-border-secondary);display:block">
+              {% else %}
+              <div class="ava" id="PRF-AVA-TXT" style="background:{{ user.avatar_color }};width:40px;height:40px;font-size:14px">{{ user.initials }}</div>
+              {% endif %}
+              <div style="position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s" id="PRF-AVA-HOVER"><i class="ti ti-camera" style="font-size:13px;color:#fff"></i></div>
+            </div>
+            <div style="min-width:0">
+              <div style="font-size:13px;font-weight:600;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user.prenom }} {{ user.nom }}</div>
+              <div style="font-size:11px;color:var(--color-text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user.email }}</div>
+            </div>
+          </div>
+          <div style="padding:8px 14px 10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+              <span style="font-size:11px;color:var(--color-text-secondary)" data-i18n="profile.role">Rôle</span>
+              <span style="font-size:11px;font-weight:500;color:var(--color-text-primary)">{{ user.role_label }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+              <span style="font-size:11px;color:var(--color-text-secondary)" data-i18n="profile.id">Identifiant</span>
+              <span style="font-size:11px;font-weight:500;font-family:var(--font-mono);color:var(--color-text-primary)">{{ user.id }}</span>
+            </div>
+            <div id="PRF-CNX" style="display:flex;justify-content:space-between;align-items:center;padding:5px 0"></div>
+          </div>
+          <div style="padding:6px 8px;border-top:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;gap:4px">
+            <button class="btn btn-sm" style="width:100%;justify-content:center" onclick="document.getElementById('AVA-INPUT').click()"><i class="ti ti-camera"></i>Changer ma photo</button>
+            <button class="btn btn-sm" style="width:100%;justify-content:center;color:var(--cr);border-color:transparent" onclick="doLogout()" data-i18n="btn.logout"><i class="ti ti-logout"></i>Se déconnecter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content" id="CONTENT">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="pg on" id="pg-dashboard">
+
+  <!-- Bannière photo chantier -->
+  <div id="DASH-SITE-CARD" style="position:relative;width:100%;height:250px;border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:12px;background:var(--color-background-secondary);border:1px solid var(--color-border-tertiary)">
+    <!-- slides injectés par JS (.dash-slide) -->
+    <!-- placeholder sans photo -->
+    <div id="DASH-SITE-PH" style="display:flex;align-items:center;justify-content:center;height:100%;gap:10px;color:var(--color-text-tertiary)">
+      <i class="ti ti-photo" style="font-size:32px"></i>
+      <div>
+        <div style="font-size:13px;font-weight:500">Projets AGEROUTE</div>
+        <div style="font-size:11px;margin-top:2px">Ajoutez des photos dans Paramètres → Administration</div>
+      </div>
+    </div>
+    <!-- overlay gradient + infos (visible seulement quand photo présente) -->
+    <div id="DASH-SITE-OV" style="display:none;position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.72) 0%, rgba(0,0,0,.22) 55%, transparent 100%);flex-direction:column;justify-content:flex-end;padding:16px 20px 14px">
+      <div id="DASH-DOTS" style="display:flex;gap:5px;margin-bottom:10px"></div>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-size:20px;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.4);margin-bottom:3px">Projets AGEROUTE</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.82);display:flex;align-items:center;gap:8px">
+            <span><i class="ti ti-map-pin" style="font-size:11px;margin-right:3px"></i>AGEROUTE Sénégal — Réseau routier national</span>
+            <span style="opacity:.6">·</span>
+            <span id="DASH-SITE-DATE" style="font-family:var(--font-mono)"></span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span id="DASH-CTR" style="display:none;font-size:10px;font-family:var(--font-mono);color:rgba(255,255,255,.7);background:rgba(0,0,0,.35);padding:2px 7px;border-radius:10px"></span>
+          <button class="btn btn-sm" onclick="goTo('parametres','Paramètres');switchParamTab('admin')" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35);color:#fff;backdrop-filter:blur(4px);font-size:11px"><i class="ti ti-camera" style="font-size:12px"></i>Gérer</button>
+        </div>
+      </div>
+    </div>
+    <!-- flèches navigation carousel -->
+    <button id="DASH-PREV" onclick="carouselNav(-1)" style="display:none;position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);border:none;border-radius:50%;width:32px;height:32px;color:#fff;cursor:pointer;font-size:18px;line-height:1;backdrop-filter:blur(4px);z-index:10;padding:0">‹</button>
+    <button id="DASH-NEXT" onclick="carouselNav(1)"  style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);border:none;border-radius:50%;width:32px;height:32px;color:#fff;cursor:pointer;font-size:18px;line-height:1;backdrop-filter:blur(4px);z-index:10;padding:0">›</button>
+  </div>
+
+  <div class="al al-r" id="D-ALERT"><i class="ti ti-alert-octagon"></i><strong>Chargement…</strong></div>
+  <div class="g5" id="D-KPIS"></div>
+  <div class="g2l">
+    <div class="card">
+      <div class="card-hd"><span class="card-title" data-i18n="dash.perf_domain"><i class="ti ti-chart-bar"></i>Performance par domaine</span><button class="card-action" data-i18n="btn.see_all" onclick="goTo('indicateurs','Indicateurs')">Voir tout →</button></div>
+      <div id="DOM-BARS"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="dec-card dec-r" style="margin-bottom:0" id="D-DEC-CARD">
+        <div style="font-size:10px;font-weight:500;color:var(--cr);opacity:.7;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px" data-i18n="dash.auto_decision">Décision automatique</div>
+        <div style="font-size:14px;font-weight:500;color:var(--cr);margin-bottom:9px" id="D-DEC-TXT">—</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="feu feu-r" id="D-FEU"><div class="feu-dot" style="background:var(--cr)"></div>ROUGE</div>
+          <span class="mono" style="font-size:11px;color:var(--cr);opacity:.8" id="D-SC-LBL">Score 8D = —</span>
+          <button class="btn btn-sm" style="margin-left:auto;font-size:10px" onclick="goTo('decision','Matrice de décision 8D')">Détail →</button>
+        </div>
+      </div>
+      <div class="card" style="padding:12px 13px">
+        <div style="font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:9px" data-i18n="dash.status_dist">Répartition des statuts</div>
+        <div id="STAT-ROWS"></div>
+        <div style="margin-top:9px;padding-top:9px;border-top:0.5px solid var(--color-border-tertiary)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em" data-i18n="dash.closure_rate">Taux clôture</span><span style="font-size:10px;color:var(--color-text-tertiary)" data-i18n="dash.closure_target">Cible 80%</span></div>
+          <div style="display:flex;align-items:center;gap:9px"><span class="mono" style="font-size:18px;font-weight:500;color:#BA7517" id="D-TAUX">—</span><div style="flex:1;height:7px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden"><div style="height:100%;background:#BA7517;border-radius:4px;transition:width .4s;width:0%" id="D-TAUX-BAR"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hd"><span class="card-title" data-i18n="dash.priority_actions"><i class="ti ti-checklist"></i>Actions prioritaires</span><button class="card-action" data-i18n="btn.see_all" onclick="goTo('actions','Plan d\'actions')">Voir tout →</button></div><div class="tbl"><table><thead><tr><th data-i18n="th.action">Action</th><th data-i18n="th.domain">Dom.</th><th data-i18n="th.deadline">Délai</th><th>Av.</th><th data-i18n="th.priority">Prio.</th></tr></thead><tbody id="DASH-ACT"></tbody></table></div></div>
+    <div class="card"><div class="card-hd"><span class="card-title" data-i18n="dash.recent_incidents"><i class="ti ti-alert-triangle"></i>Incidents récents</span><button class="card-action" data-i18n="btn.see_all" onclick="goTo('incidents','Incidents')">Voir tout →</button></div><div class="tbl"><table><thead><tr><th data-i18n="th.date">Date</th><th data-i18n="th.zone">Zone</th><th data-i18n="th.gravity">Gravité</th><th data-i18n="th.description">Description</th><th data-i18n="th.status">Statut</th></tr></thead><tbody id="DASH-INC"></tbody></table></div></div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <div class="card-hd"><span class="card-title"><i class="ti ti-calendar-week"></i>Agenda — 14 prochains jours</span></div>
+    <div id="DASH-AGENDA" style="padding:4px 0"></div>
+  </div>
+</div>
+
+<!-- ═══ INDICATEURS ═══ -->
+<div class="pg" id="pg-indicateurs">
+  <div class="filter-bar">
+    <button class="btn btn-sm" id="FBT-all" onclick="setFilt('all')"><span class="b b-n">Tous</span>&nbsp;<span id="CNT-all">—</span></button>
+    <button class="btn btn-sm" id="FBT-nc_critique" onclick="setFilt('nc_critique')"><span class="b b-r">NC crit.</span>&nbsp;<span id="CNT-nc_critique">—</span></button>
+    <button class="btn btn-sm" id="FBT-nc_majeure" onclick="setFilt('nc_majeure')"><span class="b b-a">NC maj.</span>&nbsp;<span id="CNT-nc_majeure">—</span></button>
+    <button class="btn btn-sm" id="FBT-nc_mineure" onclick="setFilt('nc_mineure')"><span class="b b-w">NC min.</span>&nbsp;<span id="CNT-nc_mineure">—</span></button>
+    <button class="btn btn-sm" id="FBT-conforme" onclick="setFilt('conforme')"><span class="b b-ok">Conf.</span>&nbsp;<span id="CNT-conforme">—</span></button>
+    <select id="DOMF" class="fsel" onchange="renderInd()"><option value="">Tous domaines</option><option>HSE</option><option>QUAL</option><option>OA</option><option>GC</option><option>ENV</option><option>TOPO</option><option>GEO</option><option>WX</option></select>
+    <input id="SRCH" type="text" class="finp" placeholder="Rechercher..." oninput="renderInd()" style="width:130px">
+    <span id="IND-CNT" style="font-size:11px;color:var(--color-text-secondary);margin-left:auto">—</span>
+    <button class="btn btn-p btn-sm" onclick="goTo('saisie','Saisie terrain')"><i class="ti ti-plus"></i>Saisir obs.</button>
+  </div>
+  <div class="card tbl" style="overflow-x:auto"><table style="table-layout:fixed"><colgroup><col style="width:70px"><col style="width:50px"><col style="width:60px"><col><col style="width:64px"><col style="width:90px"><col style="width:54px"><col style="width:56px"><col style="width:48px"><col style="width:122px"></colgroup>
+    <thead><tr><th data-i18n="th.id">ID</th><th data-i18n="th.domain">Dom.</th><th data-i18n="th.zone">Zone</th><th data-i18n="th.label">Libellé</th><th data-i18n="th.blocking">Bloquant</th><th data-i18n="th.status">Statut</th><th data-i18n="th.score">Score</th><th data-i18n="th.risk">Risque</th><th data-i18n="th.rank">Rang</th><th data-i18n="th.actions_col">Actions</th></tr></thead>
+    <tbody id="IND-TBODY"></tbody>
+  </table></div>
+  <div id="IND-PAGES" class="pager"></div>
+</div>
+
+<!-- ═══ FICHE ═══ -->
+<div class="pg" id="pg-fiche">
+  <button class="btn btn-sm" onclick="goTo('indicateurs','Indicateurs')" style="margin-bottom:11px" data-i18n="btn.back_list"><i class="ti ti-arrow-left"></i>Retour liste</button>
+  <div class="card" style="padding:15px;margin-bottom:11px">
+    <div style="display:flex;align-items:flex-start;gap:13px;flex-wrap:wrap">
+      <div class="ring" id="F-RING"><div id="F-SC" class="mono" style="font-size:17px;font-weight:500">—</div><div style="font-size:9px;color:var(--color-text-tertiary)">score</div></div>
+      <div style="flex:1;min-width:160px">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px">
+          <span id="F-DOM" style="padding:2px 7px;border-radius:3px;font-size:10px;font-weight:500;font-family:var(--font-mono)">—</span>
+          <span id="F-ID" class="mono" style="font-size:12px;color:var(--color-text-secondary)">—</span>
+          <span id="F-BL" class="tag tag-r" style="display:none">BLOQUANT</span>
+          <span id="F-RG" class="tag tag-i" style="display:none">RÉGL.</span>
+        </div>
+        <div id="F-LIB" style="font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:5px">—</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--color-text-secondary)">
+          <span>Zone : <strong id="F-ZN">—</strong></span>
+          <span>Impact : <strong id="F-IMP">—</strong></span>
+          <span>Poids : <strong id="F-PDS" class="mono">—</strong></span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button class="btn btn-p btn-sm" id="F-SAISIR" data-i18n="btn.enter_obs2"><i class="ti ti-pencil"></i>Saisir obs.</button>
+        <button class="btn btn-sm" onclick="goTo('indicateurs','Indicateurs')" data-i18n="btn.list"><i class="ti ti-list"></i>Liste</button>
+      </div>
+    </div>
+  </div>
+  <div id="F-ALERT" class="al al-r" style="margin-bottom:11px;display:none"><i class="ti ti-alert-octagon"></i>—</div>
+  <div class="g4" id="F-STATS" style="margin-bottom:11px"></div>
+  <div class="g2" style="margin-bottom:11px">
+    <div class="card"><div class="card-hd"><span class="card-title" data-i18n="misc.history"><i class="ti ti-history"></i>Historique observations</span><span id="F-HCNT" style="font-size:11px;color:var(--color-text-secondary)">—</span></div><div id="F-HIST"></div></div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card" style="padding:14px">
+        <div style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px"><i class="ti ti-bell-ringing" style="color:var(--ca);margin-right:4px"></i>Seuil d'alerte automatique</div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:8px">Si le score descend sous ce seuil, une notification est déclenchée automatiquement.</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="fc" type="number" id="F-SEUIL-INP" min="0" max="1" step="0.05" placeholder="Ex: 0.50" style="flex:1;max-width:120px">
+          <button class="btn btn-sm btn-p" onclick="setSeuil()"><i class="ti ti-device-floppy"></i>Enregistrer</button>
+          <button class="btn btn-sm" onclick="setSeuil(true)" style="color:var(--color-text-secondary)" title="Désactiver l'alerte"><i class="ti ti-bell-off"></i></button>
+        </div>
+        <div id="F-SEUIL-STATUS" style="font-size:11px;margin-top:6px;color:var(--color-text-tertiary)"></div>
+      </div>
+      <div class="card"><div class="card-hd"><span class="card-title" data-i18n="sec.calc_engine"><i class="ti ti-calculator"></i>Calculs moteur</span></div><div style="padding:12px" id="F-CALC"></div></div>
+      <div class="card"><div class="card-hd"><span class="card-title" data-i18n="sec.related_actions"><i class="ti ti-checklist"></i>Actions liées</span><button class="card-action" data-i18n="btn.plan" onclick="goTo('actions','Plan d\'actions')">Plan →</button></div><div id="F-ACTS"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><span class="card-title"><i class="ti ti-git-branch"></i>Historique des modifications</span><span id="F-MODHCNT" style="font-size:11px;color:var(--color-text-secondary)">—</span></div>
+    <div id="F-MOD-HIST" style="padding:0 4px"></div>
+  </div>
+</div>
+
+<!-- ═══ SAISIE ═══ -->
+<div class="pg" id="pg-saisie">
+  <div style="max-width:460px">
+    <button class="btn btn-sm" onclick="goTo('indicateurs','Indicateurs')" style="margin-bottom:11px" data-i18n="btn.back"><i class="ti ti-arrow-left"></i>Retour</button>
+    <div class="card"><div class="card-hd"><span class="card-title"><i class="ti ti-pencil"></i>Saisir une observation terrain</span></div>
+    <div style="padding:14px">
+      <div class="fg"><label class="fl" data-i18n="lbl.indicator">Indicateur</label><select class="fc" id="OBS-IND" onchange="updObs()"></select></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.observed_status">Statut observé</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div class="st-opt" id="SO-conforme" onclick="selSt('conforme')">Conforme<span class="mono" style="font-size:10px;opacity:.6">1.00·0pt</span></div>
+          <div class="st-opt" id="SO-nc_mineure" onclick="selSt('nc_mineure')">NC mineure<span class="mono" style="font-size:10px;opacity:.6">0.75·1pt</span></div>
+          <div class="st-opt" id="SO-nc_majeure" onclick="selSt('nc_majeure')">NC majeure<span class="mono" style="font-size:10px;opacity:.6">0.50·2pt</span></div>
+          <div class="st-opt" id="SO-nc_critique" onclick="selSt('nc_critique')" style="border-color:var(--cr);background:var(--crl);color:var(--cr)">NC critique<span class="mono" style="font-size:10px;opacity:.6">0.00·3pt</span></div>
+          <div class="st-opt" id="SO-na" onclick="selSt('na')" style="grid-column:span 2">N/A — non applicable<span class="mono" style="font-size:10px;opacity:.6">exclu</span></div>
+        </div>
+      </div>
+      <div id="OBS-AUTO" class="al al-r" style="margin-bottom:11px"><i class="ti ti-bolt"></i>Action corrective générée automatiquement sous <strong style="margin-left:3px">J+1</strong></div>
+      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:11px;display:flex;gap:16px">
+        <div><div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:2px">Score</div><div id="OBS-SC" class="mono" style="font-size:15px;font-weight:500;color:var(--cr)">0.00</div></div>
+        <div><div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:2px">Pts risque</div><div id="OBS-RQ" class="mono" style="font-size:15px;font-weight:500">3</div></div>
+        <div><div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:2px">Délai action</div><div id="OBS-DL" class="mono" style="font-size:15px;font-weight:500;color:var(--cr)">J+1</div></div>
+      </div>
+      <div class="fg"><label class="fl" data-i18n="lbl.comment">Commentaire</label><textarea class="fc" id="OBS-CMT" rows="3"></textarea></div>
+      <div class="fg" style="margin-bottom:14px">
+        <label class="fl"><i class="ti ti-camera" style="font-size:11px;margin-right:3px"></i>Photos terrain</label>
+        <div id="OBS-PHOTOS-WIDGET"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-p" style="flex:1" onclick="submitObs()" data-i18n="btn.save_obs"><i class="ti ti-device-floppy"></i>Enregistrer l'observation</button>
+        <button class="btn" onclick="goTo('indicateurs','Indicateurs')" data-i18n="btn.cancel">Annuler</button>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ═══ ACTIONS ═══ -->
+<div class="pg" id="pg-actions">
+  <div class="g4" style="margin-bottom:11px">
+    <div class="kpi" style="border-top-color:var(--cs)"><div class="kpi-l" data-i18n="kpi.total">Total</div><div class="kpi-v" id="A-TOT">—</div></div>
+    <div class="kpi" style="border-top-color:var(--cg)"><div class="kpi-l" data-i18n="kpi.closure_rate">Taux clôture</div><div class="kpi-v" id="A-TAUX" style="color:#BA7517">—</div><div class="kpi-s" data-i18n="dash.closure_target">Cible 80%</div></div>
+    <div class="kpi" style="border-top-color:var(--cr)"><div class="kpi-l" data-i18n="kpi.overdue">En retard</div><div class="kpi-v" id="A-RET" style="color:var(--cr)">—</div></div>
+    <div class="kpi" style="border-top-color:#BA7517"><div class="kpi-l" data-i18n="kpi.review7d">Revue &lt;7j</div><div class="kpi-v" style="color:#BA7517" id="A-7J">—</div></div>
+  </div>
+  <div class="al al-o" id="A-ALERT" style="display:none"><i class="ti ti-clock"></i>Actions arrivant à échéance dans les 7 prochains jours</div>
+  <div class="filter-bar">
+    <select id="A-STF" class="fsel" onchange="renderAct()"><option value="">Tous statuts</option><option value="ouverte">Ouverte</option><option value="en_cours">En cours</option><option value="cloturee">Clôturée</option></select>
+    <select id="A-PRF" class="fsel" onchange="renderAct()"><option value="">Toutes priorités</option><option value="critique">Critique</option><option value="majeure">Majeure</option><option value="mineure">Mineure</option></select>
+    <select id="A-DF" class="fsel" onchange="renderAct()"><option value="">Toutes périodes</option><option value="7">7 derniers jours</option><option value="30">Ce mois-ci</option><option value="90">Ce trimestre</option><option value="365">Cette année</option></select>
+    <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="A-RF" onchange="renderAct()">En retard</label>
+    <button class="btn btn-p btn-sm" style="margin-left:auto" onclick="openAddAction()" data-i18n="btn.new_action"><i class="ti ti-plus"></i>Nouvelle action</button>
+  </div>
+  <div class="card tbl" style="overflow-x:auto"><table style="table-layout:fixed"><colgroup><col style="width:72px"><col><col style="width:72px"><col style="width:100px"><col style="width:82px"><col style="width:110px"><col style="width:95px"><col style="width:80px"><col style="width:90px"></colgroup><thead><tr><th data-i18n="th.id">ID</th><th data-i18n="th.action">Action</th><th data-i18n="th.domain">Dom.</th><th data-i18n="th.resp">Resp.</th><th data-i18n="th.deadline">Délai</th><th data-i18n="th.progress">Avancement</th><th data-i18n="th.status">Statut</th><th data-i18n="th.priority">Priorité</th><th data-i18n="th.actions_col">Actions</th></tr></thead><tbody id="A-TBODY"></tbody></table></div>
+  <div id="A-PAGES" class="pager"></div>
+</div>
+
+<!-- ═══ INCIDENTS ═══ -->
+<div class="pg" id="pg-incidents">
+  <div class="g4" style="margin-bottom:11px">
+    <div class="kpi" style="border-top-color:var(--cr)"><div class="kpi-l" data-i18n="kpi.tf">TF</div><div class="kpi-v" style="color:#BA7517;font-size:19px">2.4</div><div class="kpi-s">/M h trav.</div></div>
+    <div class="kpi" style="border-top-color:#BA7517"><div class="kpi-l" data-i18n="kpi.tg">TG</div><div class="kpi-v" style="color:#BA7517;font-size:19px">0.8</div><div class="kpi-s">/K h trav.</div></div>
+    <div class="kpi" style="border-top-color:var(--cg)"><div class="kpi-l" data-i18n="kpi.days_no_acc">Jours sans acc.</div><div class="kpi-v" style="color:var(--cg)">12</div></div>
+    <div class="kpi" style="border-top-color:var(--cs)"><div class="kpi-l" data-i18n="kpi.inc_month">Incidents (mois)</div><div class="kpi-v" id="INC-TOT">—</div></div>
+  </div>
+  <div class="filter-bar">
+    <select id="I-GF" class="fsel" onchange="renderInc()"><option value="">Toutes gravités</option><option value="grave">Grave</option><option value="modere">Modéré</option><option value="mineur">Mineur</option></select>
+    <select id="I-SF" class="fsel" onchange="renderInc()"><option value="">Tous statuts</option><option value="investigation">Investigation</option><option value="en_cours">En cours</option><option value="cloture">Clôturé</option></select>
+    <select id="I-DF" class="fsel" onchange="renderInc()"><option value="">Toutes périodes</option><option value="7">7 derniers jours</option><option value="30">Ce mois-ci</option><option value="90">Ce trimestre</option><option value="365">Cette année</option></select>
+    <button class="btn btn-p btn-sm" style="margin-left:auto" onclick="openModal('M-INC')" data-i18n="btn.declare_incident"><i class="ti ti-plus"></i>Déclarer incident</button>
+  </div>
+  <div class="card tbl" style="overflow-x:auto"><table style="table-layout:fixed"><colgroup><col style="width:78px"><col style="width:72px"><col style="width:88px"><col style="width:82px"><col style="width:46px"><col><col style="width:115px"><col style="width:92px"><col style="width:88px"><col style="width:82px"></colgroup><thead><tr><th data-i18n="th.date">Date</th><th data-i18n="th.zone">Zone</th><th data-i18n="th.type">Type</th><th data-i18n="th.gravity">Gravité</th><th data-i18n="th.days_stop">J.A.</th><th data-i18n="th.description">Description</th><th data-i18n="th.cause">Cause</th><th data-i18n="th.resp">Resp.</th><th data-i18n="th.status">Statut</th><th data-i18n="th.actions_col">Actions</th></tr></thead><tbody id="I-TBODY"></tbody></table></div>
+  <div id="I-PAGES" class="pager"></div>
+</div>
+
+<!-- ═══ FICHE ACTION ═══ -->
+<div class="pg" id="pg-fiche-action">
+  <button class="btn btn-sm" onclick="goTo('actions','Plan d\'actions')" style="margin-bottom:11px" data-i18n="btn.back_actions"><i class="ti ti-arrow-left"></i>Retour plan d'actions</button>
+  <div class="card" style="padding:15px;margin-bottom:11px">
+    <div style="display:flex;align-items:flex-start;gap:13px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:6px">
+          <span class="mono" style="font-size:12px;font-weight:600" id="FA-ID">—</span>
+          <span id="FA-PRIO-BDG"></span>
+          <span id="FA-DOM-BDG"></span>
+          <span id="FA-STATUT-BDG"></span>
+        </div>
+        <div id="FA-LIB" style="font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px">—</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--color-text-secondary)">
+          <span>Responsable : <strong id="FA-RESP">—</strong></span>
+          <span>Délai : <strong id="FA-DELAI">—</strong></span>
+          <span>Créée le : <strong id="FA-DATE">—</strong></span>
+          <span>Source : <strong id="FA-SRC">—</strong></span>
+        </div>
+      </div>
+      <div style="flex-shrink:0;text-align:center">
+        <div style="font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">Avancement</div>
+        <div class="mono" style="font-size:28px;font-weight:500" id="FA-AV-NUM">—</div>
+        <div style="width:80px;height:7px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden;margin:4px 0"><div id="FA-AV-BAR" style="height:100%;border-radius:4px;transition:width .4s;background:#3B6D11"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:11px">
+    <div class="card" style="padding:14px">
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px" data-i18n="sec.quick_update">Mise à jour rapide</div>
+      <div class="fg"><label class="fl" data-i18n="lbl.progress">Avancement (%)</label>
+        <div style="display:flex;align-items:center;gap:10px"><input type="range" min="0" max="100" step="5" id="FA-AV-SL" style="flex:1;accent-color:var(--ink)" oninput="document.getElementById('FA-AV-SL-V').textContent=this.value+'%'"><span id="FA-AV-SL-V" class="mono" style="font-size:13px;font-weight:500;width:36px">0%</span></div>
+      </div>
+      <div class="fg"><label class="fl" data-i18n="lbl.status">Statut</label>
+        <select class="fc" id="FA-ST-SEL"><option value="ouverte">Ouverte</option><option value="en_cours">En cours</option><option value="en_attente">En attente</option><option value="cloturee">Clôturée</option></select>
+      </div>
+      <div class="fg"><label class="fl" data-i18n="lbl.next_review">Prochaine revue</label><input class="fc" type="date" id="FA-NEXT-REV"></div>
+      <div class="fg" style="margin-bottom:0"><label class="fl" data-i18n="lbl.pilot_comment">Commentaire pilote</label><textarea class="fc" id="FA-CMT" rows="2" style="resize:none" placeholder="Commentaire de suivi..."></textarea></div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-p" style="flex:1" onclick="saveActionRevue()" data-i18n="btn.save_review"><i class="ti ti-device-floppy"></i>Enregistrer la revue</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title" data-i18n="sec.review_history"><i class="ti ti-history"></i>Historique des revues</span><span id="FA-RCNT" style="font-size:11px;color:var(--color-text-secondary)">—</span></div>
+      <div id="FA-REVIEWS"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FICHE INCIDENT ═══ -->
+<div class="pg" id="pg-fiche-incident">
+  <button class="btn btn-sm" onclick="goTo('incidents','Registre des incidents')" style="margin-bottom:11px" data-i18n="btn.back_register"><i class="ti ti-arrow-left"></i>Retour registre</button>
+  <div class="card" style="padding:15px;margin-bottom:11px">
+    <div style="display:flex;align-items:flex-start;gap:13px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:6px">
+          <span class="mono" style="font-size:12px;font-weight:600" id="FI-ID">—</span>
+          <span id="FI-GRAV-BDG"></span>
+          <span id="FI-STATUT-BDG"></span>
+        </div>
+        <div id="FI-DESC" style="font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px">—</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--color-text-secondary)">
+          <span>Date : <strong id="FI-DATE">—</strong></span>
+          <span>Zone : <strong id="FI-ZONE">—</strong></span>
+          <span>Type : <strong id="FI-TYPE">—</strong></span>
+          <span>Jours arrêt : <strong id="FI-JA" style="color:#A32D2D">—</strong></span>
+          <span>Responsable : <strong id="FI-RESP">—</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card" style="padding:14px">
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px" data-i18n="sec.details_tracking">Détails & suivi</div>
+      <div class="fg"><label class="fl" data-i18n="lbl.identified_cause">Cause identifiée</label><input class="fc" type="text" id="FI-CAUSE-INP" placeholder="Cause identifiée..."></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.immediate_action">Action immédiate</label><textarea class="fc" id="FI-AI-INP" rows="2" style="resize:none" placeholder="Action immédiate prise..."></textarea></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.status">Statut</label>
+        <select class="fc" id="FI-ST-SEL" onchange="toggleCloBlock(this.value)">
+          <option value="ouvert">Ouvert</option>
+          <option value="investigation">Investigation</option>
+          <option value="en_cours">En cours</option>
+          <option value="cloture">Clôturé</option>
+        </select>
+      </div>
+      <div id="FI-CLOTURE-BLOCK" style="display:none;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;margin-bottom:8px;border-left:3px solid var(--cg)">
+        <div style="font-size:11px;font-weight:600;color:var(--cg);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em"><i class="ti ti-circle-check" style="margin-right:4px"></i>Clôture de l'incident</div>
+        <div class="fg"><label class="fl">Date de clôture</label><input class="fc" type="date" id="FI-CLO-DATE"></div>
+        <div class="fg" style="margin-bottom:0"><label class="fl">Clôturé par</label><input class="fc" type="text" id="FI-CLO-PAR" placeholder="Nom du responsable..."></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-p" style="flex:1" onclick="saveIncidentUpdate()" data-i18n="btn.update"><i class="ti ti-device-floppy"></i>Mettre à jour</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card" style="padding:14px">
+        <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px" data-i18n="sec.calc_info">Informations calculées</div>
+        <div id="FI-CALC" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div class="card" id="FI-PHOTOS-CARD" style="padding:14px;display:none">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">
+          <i class="ti ti-camera" style="font-size:13px;color:var(--brand)"></i>Photos de l'incident
+        </div>
+        <div id="FI-PHOTOS"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DÉCISION 8D ═══ -->
+<div class="pg" id="pg-decision">
+  <div class="dec-card" id="DEC-CARD" style="border-color:var(--cr);background:var(--crl)">
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <div id="DEC-RING"></div>
+      <div style="flex:1;min-width:180px">
+        <div style="font-size:10px;font-weight:700;opacity:.65;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px" id="DEC-HDR">Décision automatique</div>
+        <div style="font-size:17px;font-weight:800;letter-spacing:-.02em;margin-bottom:10px" id="DEC-TXT">—</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="feu feu-r" id="DEC-FEU"><div class="feu-dot" style="background:var(--cr)"></div>ROUGE</div>
+          <span class="mono" style="font-size:11px;opacity:.7;font-weight:600" id="DEC-SC">Score 8D = —</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hd"><span class="card-title" data-i18n="sec.8d_components"><i class="ti ti-chart-bar"></i>Composantes 8D</span></div><div style="padding:13px" id="COMP-8D"></div></div>
+    <div class="card"><div class="card-hd"><span class="card-title" data-i18n="sec.recommendations"><i class="ti ti-bulb"></i>Recommandations</span></div><div style="padding:10px 13px" id="RECS-8D"></div></div>
+  </div>
+  <div class="card"><div class="card-hd"><span class="card-title" data-i18n="sec.decision_history"><i class="ti ti-history"></i>Historique des décisions</span></div>
+    <div class="tbl"><table><thead><tr><th data-i18n="th.date">Date</th><th data-i18n="th.score8d">Score 8D</th><th data-i18n="th.index">Indice</th><th data-i18n="th.risk2">Risque</th><th data-i18n="th.light">Feu</th><th data-i18n="th.decision">Décision</th><th data-i18n="th.validator">Validateur</th></tr></thead><tbody id="DEC-HIST"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ═══ REVUE 8D ═══ -->
+<div class="pg" id="pg-revue">
+  <div style="display:flex;gap:11px;min-height:580px">
+    <div style="width:300px;flex-shrink:0;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);display:flex;flex-direction:column;overflow-y:auto">
+      <div class="section-hd" data-i18n="sec.8d_scores"><i class="ti ti-adjustments-horizontal"></i>Saisie des scores 8D</div>
+      <div style="padding:13px;flex:1">
+        <div id="REVUE-SLIDERS"></div>
+        <div style="margin-top:13px;padding:11px;border-radius:var(--border-radius-md);display:flex;justify-content:space-between;align-items:center" id="RV-BOX" style="background:var(--crl)">
+          <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px" id="RV-SC-LBL" data-i18n="misc.calculated_score">Score 8D calculé</div><div class="mono" style="font-size:22px;font-weight:500" id="RV-SCORE">—</div></div>
+          <div class="feu feu-r" id="RV-FEU"><div class="feu-dot"></div>ROUGE</div>
+        </div>
+        <button class="btn btn-p" style="width:100%;margin-top:11px;justify-content:center" onclick="validerRevue()" data-i18n="btn.validate_review"><i class="ti ti-send"></i>Valider la revue</button>
+      </div>
+    </div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:11px">
+      <div class="dec-card" id="RV-DEC-CARD" style="margin-bottom:0;background:var(--crl);border-color:var(--cr)"><div style="font-size:10px;font-weight:500;opacity:.7;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Décision calculée</div><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px"><div style="font-size:14px;font-weight:500" id="RV-DEC">—</div><div class="feu feu-r" id="RV-FEU2"><div class="feu-dot"></div>ROUGE</div></div></div>
+      <div class="card"><div class="card-hd"><span class="card-title" data-i18n="sec.score_components"><i class="ti ti-chart-bar"></i>Composantes du score</span></div><div style="padding:13px" id="RV-COMP"></div></div>
+      <div class="card"><div class="card-hd"><span class="card-title" data-i18n="sec.auto_recs"><i class="ti ti-bulb"></i>Recommandations automatiques</span></div><div style="padding:10px 13px" id="RV-RECS"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REPORTING ═══ -->
+<div class="pg" id="pg-reporting">
+  <div class="g3">
+    <div class="card" style="padding:18px;text-align:center" onmouseenter="this.style.borderColor='var(--color-border-secondary)'" onmouseleave="this.style.borderColor=''">
+      <i class="ti ti-file-type-pdf" style="font-size:28px;color:var(--cr);margin-bottom:9px;display:block"></i>
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px" data-i18n="rpt.monthly_pdf">Rapport mensuel PDF</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:13px" data-i18n="rpt.monthly_pdf_sub">Synthèse · domaines · actions · TF/TG</div>
+      <button class="btn btn-p" style="width:100%" id="BTN-PDF" onclick="genRapport('pdf')" data-i18n="btn.generate_pdf"><i class="ti ti-loader-2" id="IC-PDF" style="display:none"></i>Générer PDF →</button>
+    </div>
+    <div class="card" style="padding:18px;text-align:center" onmouseenter="this.style.borderColor='var(--color-border-secondary)'" onmouseleave="this.style.borderColor=''">
+      <i class="ti ti-table" style="font-size:28px;color:var(--cg);margin-bottom:9px;display:block"></i>
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px" data-i18n="rpt.excel">Export Excel 5 onglets</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:13px" data-i18n="rpt.excel_sub">Indicateurs · actions · incidents · utilisateurs · synthèse</div>
+      <button class="btn btn-p" style="width:100%" id="BTN-XLSX" onclick="genRapport('xlsx')" data-i18n="btn.export_xlsx"><i class="ti ti-loader-2" id="IC-XLSX" style="display:none"></i>Exporter XLSX →</button>
+    </div>
+    <div class="card" style="padding:18px;text-align:center" onmouseenter="this.style.borderColor='var(--color-border-secondary)'" onmouseleave="this.style.borderColor=''">
+      <i class="ti ti-chart-area" style="font-size:28px;color:var(--ca);margin-bottom:9px;display:block"></i>
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px" data-i18n="rpt.tftg">Tableau TF/TG mensuel</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:13px" data-i18n="rpt.tftg_sub">Historique · fréquence · gravité</div>
+      <button class="btn btn-p" style="width:100%" id="BTN-TFTG" onclick="genRapport('xlsx')" data-i18n="btn.generate"><i class="ti ti-loader-2" id="IC-TFTG" style="display:none"></i>Générer →</button>
+    </div>
+  </div>
+  <div style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px;padding:0 2px"><i class="ti ti-filter" style="color:var(--brand);margin-right:4px"></i>Exports ciblés filtrés</div>
+  <div class="g3" style="margin-bottom:16px">
+    <div class="card" style="padding:18px;text-align:center" onmouseenter="this.style.borderColor='var(--cr)'" onmouseleave="this.style.borderColor=''">
+      <i class="ti ti-alert-octagon" style="font-size:28px;color:var(--cr);margin-bottom:9px;display:block"></i>
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px">NC Critiques &amp; Majeures</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:13px">Indicateurs en écart uniquement · classés par priorité</div>
+      <button class="btn btn-sm" style="width:100%;border-color:var(--cr);color:var(--cr)" onclick="exportFiltered('nc_critiques')"><i class="ti ti-file-type-pdf"></i>Exporter PDF →</button>
+    </div>
+    <div class="card" style="padding:18px;text-align:center" onmouseenter="this.style.borderColor='var(--ca)'" onmouseleave="this.style.borderColor=''">
+      <i class="ti ti-clock-exclamation" style="font-size:28px;color:var(--ca);margin-bottom:9px;display:block"></i>
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px">Actions en retard</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:13px">Actions non clôturées · délai dépassé · triées par échéance</div>
+      <button class="btn btn-sm" style="width:100%;border-color:var(--ca);color:var(--ca)" onclick="exportFiltered('actions_retard')"><i class="ti ti-file-type-pdf"></i>Exporter PDF →</button>
+    </div>
+    <div class="card" style="padding:18px;text-align:center" onmouseenter="this.style.borderColor='var(--c1)'" onmouseleave="this.style.borderColor=''">
+      <i class="ti ti-alert-triangle" style="font-size:28px;color:var(--c1);margin-bottom:9px;display:block"></i>
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px">Incidents ouverts</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:13px">Incidents non clôturés · tous statuts sauf clôture</div>
+      <button class="btn btn-sm" style="width:100%;border-color:var(--c1);color:var(--c1)" onclick="exportFiltered('incidents_ouverts')"><i class="ti ti-file-type-pdf"></i>Exporter PDF →</button>
+    </div>
+  </div>
+  <div class="card"><div class="card-hd"><span class="card-title" data-i18n="rpt.history"><i class="ti ti-history"></i>Historique des exports</span><span id="RPT-CNT" style="font-size:11px;color:var(--color-text-secondary)">—</span></div>
+    <div class="tbl"><table><thead><tr><th data-i18n="th.report">Rapport</th><th data-i18n="th.file">Fichier</th><th data-i18n="th.generated_by">Généré par</th><th data-i18n="th.date">Date</th><th data-i18n="th.format">Format</th><th></th></tr></thead><tbody id="RPT-HIST">
+      <tr><td colspan="6" style="text-align:center;padding:22px;color:var(--color-text-tertiary)">Aucun export pour le moment</td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ═══ UTILISATEURS ═══ -->
+<div class="pg" id="pg-users">
+  <div class="filter-bar">
+    <input type="text" id="U-SRCH" class="finp" placeholder="Nom, email, rôle..." oninput="renderUsers()" style="width:200px">
+    <select id="U-ROLE" class="fsel" onchange="renderUsers()"><option value="">Tous les rôles</option><option value="admin">Admin</option><option value="direction">Direction</option><option value="resp_qsse">Resp. QSSE</option><option value="chef_chantier">Chef chantier</option><option value="resp_domaine">Resp. domaine</option><option value="metier">Métier</option></select>
+    <select id="U-STAT" class="fsel" onchange="renderUsers()"><option value="">Tous statuts</option><option value="actif">Actif</option><option value="inactif">Inactif</option></select>
+    <span id="U-CNT" style="font-size:11px;color:var(--color-text-secondary);margin-left:auto">—</span>
+    <button class="btn btn-p btn-sm" onclick="openModal('M-USER')"><i class="ti ti-user-plus"></i>Ajouter</button>
+  </div>
+  <div class="card tbl" style="overflow-x:auto"><table style="table-layout:fixed"><colgroup><col style="width:165px"><col><col style="width:115px"><col style="width:95px"><col style="width:105px"><col style="width:70px"><col style="width:100px"></colgroup><thead><tr><th data-i18n="th.user">Utilisateur</th><th data-i18n="th.email">Email</th><th data-i18n="th.role">Rôle</th><th data-i18n="th.domain">Domaine</th><th data-i18n="th.last_cnx">Dernière cnx.</th><th data-i18n="th.status">Statut</th><th data-i18n="th.actions_col">Actions</th></tr></thead><tbody id="U-TBODY"></tbody></table></div>
+</div>
+
+<!-- ═══ NOTIFICATIONS ═══ -->
+<div class="pg" id="pg-notifications">
+  <div class="g3" style="margin-bottom:11px">
+    <div class="kpi" style="border-top-color:var(--cr)"><div class="kpi-l" data-i18n="kpi.unread">Non lues</div><div class="kpi-v" id="N-CNT" style="color:var(--cr)">—</div></div>
+    <div class="kpi" style="border-top-color:#BA7517"><div class="kpi-l" data-i18n="kpi.active_jobs">Jobs actifs</div><div class="kpi-v">5</div><div class="kpi-s">10 règles configurées</div></div>
+    <div class="kpi" style="border-top-color:var(--cg)"><div class="kpi-l" data-i18n="kpi.next_review">Prochaine revue</div><div class="kpi-v" style="font-size:15px">Ven. 16h</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hd"><span class="card-title"><i class="ti ti-bell"></i>Notifications</span><div style="display:flex;gap:8px;align-items:center"><button class="card-action" onclick="markAllRead()" data-i18n="btn.mark_all_read">Tout marquer lu</button><button class="card-action" id="BTN-DEL-ALL-NOTIFS" style="display:none;color:var(--cr)" onclick="deleteAllNotifs()" data-i18n="btn.delete_all">Tout supprimer</button></div></div><div id="N-LIST"></div></div>
+    <div>
+      <div class="card" style="margin-bottom:11px"><div class="card-hd"><span class="card-title" data-i18n="sec.alert_rules"><i class="ti ti-settings-automation"></i>Règles d'alerte</span></div><div id="RULES-LIST"></div></div>
+      <div class="card"><div class="card-hd"><span class="card-title" data-i18n="sec.scheduled_jobs"><i class="ti ti-clock"></i>Jobs planifiés</span></div><div class="tbl"><table><thead><tr><th data-i18n="th.job">Job</th><th data-i18n="th.cron">Cron</th><th data-i18n="th.status">Statut</th><th></th></tr></thead><tbody id="JOBS-LIST"></tbody></table></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PARAMÈTRES ═══ -->
+<div class="pg" id="pg-parametres">
+
+  <!-- Onglets -->
+  <div style="display:flex;gap:2px;margin-bottom:14px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:4px;width:fit-content">
+    <button id="TAB-BTN-ADMIN" onclick="switchParamTab('admin')" style="display:flex;align-items:center;gap:6px;padding:7px 16px;border-radius:var(--border-radius-md);border:none;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;background:var(--color-background-primary);color:var(--color-text-primary);box-shadow:0 1px 3px rgba(0,0,0,.08)">
+      <i class="ti ti-settings-2" style="font-size:14px;color:var(--brand)"></i>Administration
+    </button>
+    <button id="TAB-BTN-PROFIL" onclick="switchParamTab('profil')" style="display:flex;align-items:center;gap:6px;padding:7px 16px;border-radius:var(--border-radius-md);border:none;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;background:transparent;color:var(--color-text-secondary)">
+      <i class="ti ti-user-circle" style="font-size:14px"></i>Mon profil
+    </button>
+  </div>
+
+  <!-- ── ONGLET ADMINISTRATION ── -->
+  <div id="TAB-ADMIN">
+    <div id="P-LOCK" style="display:none;align-items:center;gap:9px;padding:10px 14px;background:var(--cal);border-left:3px solid var(--ca);border-radius:var(--border-radius-md);margin-bottom:11px;font-size:12px;color:var(--ca)"><i class="ti ti-lock" style="font-size:16px;flex-shrink:0"></i><span>Lecture seule — seul l'administrateur peut modifier ces paramètres.</span></div>
+    <div class="g2">
+      <div class="card" style="padding:14px">
+        <div style="font-size:12px;font-weight:500;margin-bottom:11px;display:flex;align-items:center;gap:6px"><i class="ti ti-adjustments" style="font-size:15px"></i>Barèmes des scores</div>
+        <div id="P-SCORES"></div>
+        <div style="font-size:12px;font-weight:500;margin:14px 0 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-weight" style="font-size:15px"></i>Poids composantes 8D</div>
+        <div id="P-POIDS"></div>
+        <div id="P-CHECK" style="margin-top:10px;padding:7px 10px;background:var(--cgl);border-left:3px solid var(--cg);font-size:11px;color:var(--cg)">Total poids : 100% ✓</div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div style="font-size:12px;font-weight:500;margin-bottom:11px;display:flex;align-items:center;gap:6px"><i class="ti ti-target" style="font-size:15px"></i>Seuils indice QSSE-Wx</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:12px;color:var(--color-text-secondary)">Seuil vert (≥)</span><input type="number" id="P-SV" value="85" onchange="recalcParams()" style="width:68px;height:30px;font-size:12px;padding:0 7px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)"></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:12px;color:var(--color-text-secondary)">Seuil orange (≥)</span><input type="number" id="P-SO" value="70" onchange="recalcParams()" style="width:68px;height:30px;font-size:12px;padding:0 7px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)"></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:12px;color:var(--color-text-secondary)">Seuil rouge (&lt;)</span><input type="number" value="55" style="width:68px;height:30px;font-size:12px;padding:0 7px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)"></div>
+        </div>
+        <div style="font-size:12px;font-weight:500;margin:14px 0 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-building-factory" style="font-size:15px"></i>Chantier</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:12px;color:var(--color-text-secondary)">Taux clôture cible (%)</span><input type="number" value="80" style="width:68px;height:30px;font-size:12px;padding:0 7px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)"></div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:12px;color:var(--color-text-secondary)">Heures trav. / mois</span><input type="number" value="10000" style="width:68px;height:30px;font-size:12px;padding:0 7px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)"></div>
+        </div>
+        <div id="P-PREV" style="margin-top:12px;padding:8px 11px;background:var(--c1l);border-left:3px solid var(--c1);font-size:12px;color:var(--c1)">Aperçu : indice 78.4 → feu <strong id="P-FEU">ROUGE</strong></div>
+        <div id="P-ACTIONS" style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-p" onclick="saveParams()"><i class="ti ti-device-floppy"></i>Enregistrer</button>
+          <button class="btn" onclick="resetParams()"><i class="ti ti-refresh"></i>Réinitialiser</button>
+        </div>
+      </div>
+    </div>
+    <input type="file" id="SITE-INPUT" accept="image/*" multiple style="display:none" onchange="uploadSitePhoto(this)">
+    <div class="card" style="margin-top:12px;padding:14px">
+      <div style="font-size:12px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+        <span style="display:flex;align-items:center;gap:6px"><i class="ti ti-photo-up" style="font-size:15px;color:var(--brand)"></i>Photos du chantier</span>
+        <span id="SITE-CNT" style="font-size:10px;color:var(--color-text-tertiary);font-family:var(--font-mono)">0 / 8</span>
+      </div>
+      <div id="SITE-PHOTOS-GRID" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;min-height:72px"></div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn btn-p btn-sm" onclick="document.getElementById('SITE-INPUT').click()"><i class="ti ti-plus"></i>Ajouter</button>
+        <span style="font-size:10px;color:var(--color-text-tertiary)">jpg · png · webp · max 10 Mo</span>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;padding:14px">
+      <div style="font-size:12px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-table-import" style="font-size:15px;color:var(--brand)"></i>Import CSV — Indicateurs</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">Format attendu : <code style="background:var(--color-background-secondary);padding:1px 6px;border-radius:4px;font-size:10px">id,domaine,zone,libelle,bloquant,reglementaire,poids,points_risque</code></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input type="file" id="CSV-INPUT" accept=".csv,.txt" style="display:none" onchange="importCSV(this)">
+        <button class="btn btn-sm" onclick="document.getElementById('CSV-INPUT').click()"><i class="ti ti-upload"></i>Choisir un fichier CSV</button>
+        <button class="btn btn-sm" onclick="downloadCSVTemplate()"><i class="ti ti-download"></i>Télécharger modèle</button>
+      </div>
+      <div id="CSV-RESULT" style="margin-top:10px"></div>
+    </div>
+  </div>
+
+  <!-- ── ONGLET MON PROFIL ── -->
+  <div id="TAB-PROFIL" style="display:none">
+    <div class="g2">
+      <!-- Carte identité -->
+      <div class="card" style="padding:18px">
+        <div style="font-size:12px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;display:flex;align-items:center;gap:6px"><i class="ti ti-id-badge" style="font-size:15px;color:var(--brand)"></i>Identité</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">
+          <div style="position:relative;flex-shrink:0;cursor:pointer" onclick="document.getElementById('AVA-INPUT').click()" onmouseenter="document.getElementById('P-AVA-HOVER').style.opacity='1'" onmouseleave="document.getElementById('P-AVA-HOVER').style.opacity='0'">
+            <div id="P-AVA-WRAP" style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:2.5px solid var(--color-border-secondary);background:var(--color-background-tertiary);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;color:#fff"></div>
+            <div style="position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s" id="P-AVA-HOVER"><i class="ti ti-camera" style="font-size:16px;color:#fff"></i></div>
+          </div>
+          <div>
+            <div style="font-size:16px;font-weight:600;color:var(--color-text-primary);margin-bottom:3px">{{ user.prenom }} {{ user.nom }}</div>
+            <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px">{{ user.role_label }}{% if user.domaine %} · {{ user.domaine }}{% endif %}</div>
+            <div style="font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono)">{{ user.email }}</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:0.5px solid var(--color-border-tertiary);padding-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+            <span style="color:var(--color-text-secondary)">Identifiant</span>
+            <span class="mono" style="font-weight:500">{{ user.id }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+            <span style="color:var(--color-text-secondary)">Rôle</span>
+            <span style="font-weight:500">{{ user.role_label }}</span>
+          </div>
+          {% if user.domaine %}
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+            <span style="color:var(--color-text-secondary)">Domaine</span>
+            <span style="font-weight:500">{{ user.domaine }}</span>
+          </div>
+          {% endif %}
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px">
+            <span style="color:var(--color-text-secondary)">Dernière connexion</span>
+            <span class="mono" style="font-size:11px;color:var(--color-text-tertiary)">{{ user.derniere_cnx or '—' }}</span>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <button class="btn btn-sm" onclick="document.getElementById('AVA-INPUT').click()"><i class="ti ti-camera"></i>Changer ma photo</button>
+        </div>
+      </div>
+
+      <!-- Changement de mot de passe -->
+      <div class="card" style="padding:18px">
+        <div style="font-size:12px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;display:flex;align-items:center;gap:6px"><i class="ti ti-lock-password" style="font-size:15px;color:var(--brand)"></i>Changer le mot de passe</div>
+        <div class="fg"><label class="fl">Mot de passe actuel</label><input class="fc" type="password" id="PWD-OLD" placeholder="••••••••" autocomplete="current-password"></div>
+        <div class="fg"><label class="fl">Nouveau mot de passe</label><input class="fc" type="password" id="PWD-NEW" placeholder="••••••••  (min. 8 caractères)" autocomplete="new-password"></div>
+        <div class="fg" style="margin-bottom:0"><label class="fl">Confirmer le nouveau</label><input class="fc" type="password" id="PWD-CFM" placeholder="••••••••" autocomplete="new-password"></div>
+        <div id="PWD-MSG" style="display:none;margin-top:8px;font-size:11px;padding:7px 10px;border-radius:var(--border-radius-md)"></div>
+        <div style="margin-top:12px">
+          <button class="btn btn-p" onclick="savePassword()"><i class="ti ti-device-floppy"></i>Changer le mot de passe</button>
+        </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary)">
+          <div style="font-size:11px;color:var(--color-text-tertiary);display:flex;flex-direction:column;gap:4px">
+            <div><i class="ti ti-info-circle" style="font-size:11px;margin-right:3px"></i>Minimum 8 caractères</div>
+            <div><i class="ti ti-info-circle" style="font-size:11px;margin-right:3px"></i>La session reste active après le changement</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  </div><!-- end content -->
+</div><!-- end main -->
+</div><!-- end app -->
+
+<!-- ══ MODALS ══ -->
+<div class="modal-bg" id="M-INC" onclick="if(event.target===this)closeModal('M-INC')">
+  <div class="modal"><div class="modal-hd"><span style="font-size:13px;font-weight:500" data-i18n="modal.declare_incident">Déclarer un incident</span><button class="btn btn-sm btn-icon" onclick="closeModal('M-INC')"><i class="ti ti-x"></i></button></div>
+  <div class="modal-bd">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label class="fl" data-i18n="lbl.date">Date</label><input class="fc" type="date" id="IM-DATE"></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.zone">Zone</label><select class="fc" id="IM-ZONE"><option>Zone A</option><option>Zone B</option><option>Zone C</option><option>Zone D</option></select></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.type">Type</label><select class="fc" id="IM-TYPE"><option>HSE</option><option>Qualité</option><option>OA</option><option>GC</option><option>Environnement</option></select></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.gravity">Gravité</label><select class="fc" id="IM-GRAV"><option value="mineur">Mineur</option><option value="modere">Modéré</option><option value="grave">Grave</option></select></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.days_stop">Jours arrêt</label><input class="fc" type="number" id="IM-JJ" value="0" min="0"></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.responsible">Responsable</label><select class="fc" id="IM-RESP"><option>S. Martin</option><option>M. Diallo</option><option>R. Koné</option><option>A. Dupont</option></select></div>
+    </div>
+    <div class="fg"><label class="fl" data-i18n="lbl.description">Description</label><textarea class="fc" id="IM-DESC" rows="2" style="resize:none" placeholder="Décrivez l'incident..."></textarea></div>
+    <div class="fg"><label class="fl">Cause probable</label><input class="fc" type="text" id="IM-CAUSE" placeholder="Cause identifiée..."></div>
+    <div class="fg" style="margin-bottom:0">
+      <label class="fl"><i class="ti ti-camera" style="font-size:11px;margin-right:3px"></i>Photos de l'incident</label>
+      <div id="INC-PHOTOS-WIDGET"></div>
+    </div>
+  </div>
+  <div class="modal-ft"><button class="btn btn-p" style="flex:1" onclick="submitInc()" data-i18n="btn.save"><i class="ti ti-check"></i>Enregistrer</button><button class="btn" onclick="closeModal('M-INC')" data-i18n="btn.cancel">Annuler</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="M-EDIT" onclick="if(event.target===this)closeModal('M-EDIT')">
+  <div class="modal"><div class="modal-hd"><span id="EM-TITLE" style="font-size:13px;font-weight:500" data-i18n="modal.edit_action">Modifier l'action</span><button class="btn btn-sm btn-icon" onclick="closeModal('M-EDIT')"><i class="ti ti-x"></i></button></div>
+  <div class="modal-bd">
+    <div class="fg"><label class="fl" data-i18n="lbl.progress">Avancement (%)</label><div style="display:flex;align-items:center;gap:10px"><input type="range" min="0" max="100" step="5" id="EM-AV" style="flex:1;accent-color:var(--ink)" oninput="document.getElementById('EM-AV-V').textContent=this.value+'%'"><span id="EM-AV-V" class="mono" style="font-size:13px;font-weight:500;width:36px">30%</span></div></div>
+    <div class="fg"><label class="fl" data-i18n="lbl.status">Statut</label><select class="fc" id="EM-ST"><option value="ouverte">Ouverte</option><option value="en_cours">En cours</option><option value="en_attente">En attente</option><option value="cloturee">Clôturée</option></select></div>
+    <div class="fg" style="margin-bottom:0"><label class="fl" data-i18n="lbl.comment">Commentaire</label><textarea class="fc" id="EM-CMT" rows="2" style="resize:none" placeholder="Commentaire de suivi..."></textarea></div>
+  </div>
+  <div class="modal-ft"><button class="btn btn-p" style="flex:1" onclick="saveEdit()" data-i18n="btn.save"><i class="ti ti-device-floppy"></i>Enregistrer</button><button class="btn" onclick="closeModal('M-EDIT')" data-i18n="btn.cancel">Annuler</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="M-USER" onclick="if(event.target===this)closeModal('M-USER')">
+  <div class="modal"><div class="modal-hd"><span style="font-size:13px;font-weight:500" data-i18n="modal.add_user">Ajouter un utilisateur</span><button class="btn btn-sm btn-icon" onclick="closeModal('M-USER')"><i class="ti ti-x"></i></button></div>
+  <div class="modal-bd">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label class="fl" data-i18n="lbl.firstname">Prénom *</label><input class="fc" type="text" id="U-PREN" placeholder="Prénom"></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.lastname">Nom *</label><input class="fc" type="text" id="U-NOM" placeholder="Nom"></div>
+    </div>
+    <div class="fg"><label class="fl" data-i18n="lbl.email">Email *</label><input class="fc" type="email" id="U-EMAIL" placeholder="prenom.nom@ageroute.sn"></div>
+    <div class="fg"><label class="fl" data-i18n="lbl.role">Rôle *</label><select class="fc" id="U-ROLE-SEL"><option value="resp_qsse">Resp. QSSE</option><option value="chef_chantier">Chef chantier</option><option value="resp_domaine">Resp. domaine</option><option value="metier">Métier</option><option value="direction">Direction</option><option value="admin">Admin</option></select></div>
+    <div class="fg" style="margin-bottom:0"><label class="fl" data-i18n="lbl.temp_pwd">Mot de passe temporaire *</label><div style="display:flex;gap:8px"><input class="fc" type="text" id="U-PWD" placeholder="Min. 8 caractères" style="flex:1"><button class="btn btn-sm" onclick="genPwd()"><i class="ti ti-refresh"></i></button></div></div>
+  </div>
+  <div class="modal-ft"><button class="btn btn-p" style="flex:1" onclick="submitUser()" data-i18n="btn.create_user"><i class="ti ti-user-check"></i>Créer l'utilisateur</button><button class="btn" onclick="closeModal('M-USER')" data-i18n="btn.cancel">Annuler</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="M-ACT" onclick="if(event.target===this)closeModal('M-ACT')">
+  <div class="modal"><div class="modal-hd"><span style="font-size:13px;font-weight:500" data-i18n="modal.new_action">Nouvelle action corrective</span><button class="btn btn-sm btn-icon" onclick="closeModal('M-ACT')"><i class="ti ti-x"></i></button></div>
+  <div class="modal-bd">
+    <div class="fg"><label class="fl" data-i18n="lbl.source_indicator">Indicateur source</label><select class="fc" id="NA-SRC"><option value="">— Sélectionner —</option></select></div>
+    <div class="fg"><label class="fl" data-i18n="lbl.action_label">Libellé de l'action *</label><input class="fc" type="text" id="NA-LIB" placeholder="Décrire l'action corrective..."></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label class="fl" data-i18n="lbl.domain">Domaine *</label><select class="fc" id="NA-DOM"><option value="">Choisir...</option><option>HSE</option><option>QUAL</option><option>OA</option><option>GC</option><option>ENV</option><option>WX</option></select></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.responsible">Responsable *</label><select class="fc" id="NA-RESP"><option value="">Choisir...</option><option>S. Martin</option><option>M. Diallo</option><option>R. Koné</option><option>A. Dupont</option><option>F. Traoré</option><option>L. Sy</option></select></div>
+      <div class="fg" style="margin-bottom:0"><label class="fl" data-i18n="lbl.target_deadline">Délai cible *</label><input class="fc" type="date" id="NA-DEL"></div>
+      <div class="fg" style="margin-bottom:0"><label class="fl" data-i18n="lbl.priority">Priorité</label><select class="fc" id="NA-PRIO"><option value="critique">Critique</option><option value="majeure">Majeure</option><option value="mineure">Mineure</option></select></div>
+    </div>
+  </div>
+  <div class="modal-ft"><button class="btn btn-p" style="flex:1" onclick="submitAction()" data-i18n="btn.create_action"><i class="ti ti-plus"></i>Créer l'action</button><button class="btn" onclick="closeModal('M-ACT')" data-i18n="btn.cancel">Annuler</button></div>
+  </div>
+</div>
+
+<!-- Navigation mobile -->
+<nav class="mob-nav" id="MOB-NAV" style="display:none">
+  <button class="mob-nav-item on" onclick="goTo('dashboard','Tableau de bord');setMobNav(this)"><i class="ti ti-layout-dashboard"></i>Accueil</button>
+  <button class="mob-nav-item" onclick="goTo('indicateurs','Indicateurs');setMobNav(this)"><i class="ti ti-chart-bar"></i>Indicateurs</button>
+  <button class="mob-nav-item" onclick="goTo('saisie','Saisie terrain');setMobNav(this)"><i class="ti ti-pencil-plus"></i>Saisir</button>
+  <button class="mob-nav-item" onclick="goTo('incidents','Incidents');setMobNav(this)"><i class="ti ti-alert-triangle"></i>Incidents</button>
+  <button class="mob-nav-item" onclick="goTo('actions','Plan d\'actions');setMobNav(this)"><i class="ti ti-checkbox"></i>Actions</button>
+</nav>
+
+<div class="toast" id="TOAST"></div>
+
+<!-- Modale de confirmation -->
+<div class="modal-bg" id="M-CONFIRM">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-hd"><span class="card-title"><i class="ti ti-alert-triangle" style="color:var(--cr)"></i><span id="CONFIRM-TITLE">Confirmation</span></span></div>
+    <div class="modal-bd" style="padding:18px 20px">
+      <p id="CONFIRM-MSG" style="font-size:13px;line-height:1.6;color:var(--color-text-primary)"></p>
+      <p style="margin-top:10px;font-size:11px;color:var(--cr);font-weight:600"><i class="ti ti-info-circle"></i> Cette action est irréversible.</p>
+    </div>
+    <div class="modal-ft">
+      <button class="btn" style="flex:1;color:var(--cr);border-color:var(--cr)33" id="CONFIRM-OK"><i class="ti ti-trash"></i>Supprimer</button>
+      <button class="btn btn-p" style="flex:1" onclick="closeConfirm()"><i class="ti ti-x"></i>Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Barre de sauvegarde -->
+<div id="SAVE-BAR" style="display:none;position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--cgl);color:var(--cg);border:1px solid var(--cg)44;border-radius:99px;padding:5px 14px;font-size:11px;font-weight:600;z-index:9000;display:none;align-items:center;gap:6px;box-shadow:var(--shadow-sm)"><i class="ti ti-check"></i><span id="SAVE-TXT">Enregistré</span></div>
+
+<script>const CURRENT_USER_ROLE = '{{ user.role }}'; const CURRENT_USER_ID = {{ user.id }};</script>
+<!-- ═══ MODAL RECADRAGE PHOTO ═══ -->
+<div id="CROP-MODAL" style="display:none;position:fixed;inset:0;z-index:9900;background:rgba(0,0,0,.82);align-items:center;justify-content:center">
+  <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);padding:18px;width:min(620px,96vw);max-height:96vh;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 64px rgba(0,0,0,.5)">
+    <!-- header -->
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px"><i class="ti ti-crop" style="font-size:16px;color:var(--brand)"></i>Recadrer la photo</span>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span id="CROP-PROGRESS" style="font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono)"></span>
+        <button onclick="skipCrop()" style="background:none;border:none;cursor:pointer;color:var(--color-text-tertiary);font-size:18px;line-height:1;padding:0" title="Fermer sans recadrer"><i class="ti ti-x"></i></button>
+      </div>
+    </div>
+    <!-- zone image cropper -->
+    <div style="background:#111;border-radius:var(--border-radius-md);overflow:hidden;max-height:420px;display:flex;align-items:center;justify-content:center">
+      <img id="CROP-IMG" src="" alt="" style="max-width:100%;display:block">
+    </div>
+    <!-- contrôles format + rotation -->
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span style="font-size:11px;color:var(--color-text-secondary);font-weight:500">Format&nbsp;:</span>
+      <button class="btn btn-sm" id="CROP-R-FREE"   onclick="setCropRatio(NaN)"   >Libre</button>
+      <button class="btn btn-sm" id="CROP-R-169"    onclick="setCropRatio(16/9)"  >16:9</button>
+      <button class="btn btn-sm" id="CROP-R-43"     onclick="setCropRatio(4/3)"   >4:3</button>
+      <button class="btn btn-sm" id="CROP-R-11"     onclick="setCropRatio(1)"     >1:1</button>
+      <span style="flex:1"></span>
+      <button class="btn btn-sm" onclick="rotateCrop(-90)" title="Pivoter -90°"><i class="ti ti-rotate-counterclockwise" style="font-size:13px"></i></button>
+      <button class="btn btn-sm" onclick="rotateCrop(90)"  title="Pivoter +90°"><i class="ti ti-rotate-clockwise"        style="font-size:13px"></i></button>
+      <button class="btn btn-sm" onclick="flipCrop('h')"   title="Miroir horizontal"><i class="ti ti-flip-horizontal"     style="font-size:13px"></i></button>
+      <button class="btn btn-sm" onclick="flipCrop('v')"   title="Miroir vertical"><i class="ti ti-flip-vertical"         style="font-size:13px"></i></button>
+    </div>
+    <!-- actions -->
+    <div style="display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--color-border-tertiary);padding-top:10px">
+      <button class="btn btn-sm" onclick="skipCrop()"><i class="ti ti-photo"></i>Sans recadrage</button>
+      <button class="btn btn-p btn-sm" onclick="confirmCrop()"><i class="ti ti-check"></i>Valider et envoyer</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+<script src="/static/js/i18n.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
