@@ -72,7 +72,6 @@ try:
     from db import get_conn as _gc
     _rows = _startup_conn.execute('SELECT COUNT(*) FROM indicateurs WHERE poids_actif > 0').fetchone()[0]
     if _rows == 0:
-        _startup_conn.execute('PRAGMA foreign_keys=ON')
         _inds = _startup_conn.execute('SELECT * FROM indicateurs').fetchall()
         _active = [r for r in _inds if r['statut'] != 'na' and r['score'] is not None]
         _tp = sum(float(r['poids']) for r in _active) or 1.0
@@ -1471,7 +1470,7 @@ def api_submit_revue():
     who = session['user']['prenom'] + ' ' + session['user']['nom']
     conn = db.get_conn()
     indice_global, risque_global = compute_globals(conn)
-    conn.execute('INSERT OR REPLACE INTO settings VALUES (?,?)',
+    conn.execute('INSERT INTO settings (cle,valeur) VALUES (?,?) ON CONFLICT (cle) DO UPDATE SET valeur=excluded.valeur',
                  ('revue_scores', json.dumps(scores)))
     conn.execute(
         'INSERT INTO revue_history (date,score_8d,indice,risque,feu,decision,validateur) VALUES (?,?,?,?,?,?,?)',
@@ -1503,7 +1502,7 @@ def api_save_settings():
     data = request.get_json() or {}
     conn = db.get_conn()
     for key, val in data.items():
-        conn.execute('INSERT OR REPLACE INTO settings VALUES (?,?)',
+        conn.execute('INSERT INTO settings (cle,valeur) VALUES (?,?) ON CONFLICT (cle) DO UPDATE SET valeur=excluded.valeur',
                      (key, json.dumps(val)))
     conn.commit()
     conn.close()
@@ -2150,7 +2149,7 @@ def _load_site_urls(conn):
 
 def _save_site_urls(conn, urls):
     if urls:
-        conn.execute("INSERT OR REPLACE INTO settings(cle,valeur) VALUES('site_photos_json',?)", (json.dumps(urls),))
+        conn.execute("INSERT INTO settings (cle,valeur) VALUES ('site_photos_json',?) ON CONFLICT (cle) DO UPDATE SET valeur=excluded.valeur", (json.dumps(urls),))
     else:
         conn.execute("DELETE FROM settings WHERE cle='site_photos_json'")
     conn.execute("DELETE FROM settings WHERE cle='site_photo_url'")

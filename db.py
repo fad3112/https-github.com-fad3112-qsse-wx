@@ -1,12 +1,88 @@
-import sqlite3
 import os
 import json
+import sqlite3
 from werkzeug.security import generate_password_hash
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'qsse_wx.db')
+DATABASE_URL = os.environ.get('DATABASE_URL', '')
+USE_POSTGRES = bool(DATABASE_URL)
+
+if USE_POSTGRES:
+    import psycopg2
+
+PK_AUTOINC = 'SERIAL PRIMARY KEY' if USE_POSTGRES else 'INTEGER PRIMARY KEY AUTOINCREMENT'
+
+
+class Row(dict):
+    """dict that also supports positional access, like sqlite3.Row (row[0])."""
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return list(self.values())[key]
+        return dict.__getitem__(self, key)
+
+
+def _row_from_cursor(cur, raw):
+    if raw is None:
+        return None
+    cols = [d[0] for d in cur.description]
+    return Row(zip(cols, raw))
+
+
+class PGCursor:
+    def __init__(self, cur):
+        self._cur = cur
+
+    def execute(self, sql, params=()):
+        self._cur.execute(sql.replace('?', '%s'), params)
+        return self
+
+    def executemany(self, sql, seq):
+        self._cur.executemany(sql.replace('?', '%s'), list(seq))
+        return self
+
+    def executescript(self, sql):
+        self._cur.execute(sql)
+        return self
+
+    def fetchone(self):
+        return _row_from_cursor(self._cur, self._cur.fetchone())
+
+    def fetchall(self):
+        rows = self._cur.fetchall()
+        return [_row_from_cursor(self._cur, r) for r in rows]
+
+    @property
+    def rowcount(self):
+        return self._cur.rowcount
+
+
+class PGConn:
+    def __init__(self, raw):
+        self._raw = raw
+
+    def cursor(self):
+        return PGCursor(self._raw.cursor())
+
+    def execute(self, sql, params=()):
+        return self.cursor().execute(sql, params)
+
+    def executemany(self, sql, seq):
+        return self.cursor().executemany(sql, seq)
+
+    def commit(self):
+        self._raw.commit()
+
+    def rollback(self):
+        self._raw.rollback()
+
+    def close(self):
+        self._raw.close()
 
 
 def get_conn():
+    if USE_POSTGRES:
+        raw = psycopg2.connect(DATABASE_URL)
+        return PGConn(raw)
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute('PRAGMA journal_mode=WAL')
@@ -15,16 +91,19 @@ def get_conn():
 
 
 def _add_col(c, table, col, defn):
+    if USE_POSTGRES:
+        c.execute(f'ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {col} {defn}')
+        return
     try:
         c.execute(f'ALTER TABLE {table} ADD COLUMN {col} {defn}')
-    except Exception:
+    except sqlite3.OperationalError:
         pass
 
 
 def init_db():
     conn = get_conn()
     c = conn.cursor()
-    c.executescript('''
+    c.executescript(f'''
         CREATE TABLE IF NOT EXISTS users (
             id TEXT PRIMARY KEY,
             prenom TEXT NOT NULL,
@@ -52,7 +131,7 @@ def init_db():
             poids REAL DEFAULT 1.0
         );
         CREATE TABLE IF NOT EXISTS observations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {PK_AUTOINC},
             indicateur_id TEXT NOT NULL,
             date TEXT NOT NULL,
             statut TEXT NOT NULL,
@@ -86,7 +165,7 @@ def init_db():
             statut TEXT DEFAULT 'ouvert'
         );
         CREATE TABLE IF NOT EXISTS notifications (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {PK_AUTOINC},
             niveau TEXT NOT NULL,
             titre TEXT NOT NULL,
             message TEXT NOT NULL,
@@ -94,7 +173,7 @@ def init_db():
             lue INTEGER DEFAULT 0
         );
         CREATE TABLE IF NOT EXISTS revue_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {PK_AUTOINC},
             date TEXT NOT NULL,
             score_8d REAL,
             indice REAL,
@@ -108,7 +187,7 @@ def init_db():
             valeur TEXT NOT NULL
         );
         CREATE TABLE IF NOT EXISTS action_reviews (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {PK_AUTOINC},
             action_id TEXT NOT NULL,
             date TEXT NOT NULL,
             statut TEXT NOT NULL,
@@ -118,7 +197,7 @@ def init_db():
             FOREIGN KEY (action_id) REFERENCES actions(id)
         );
         CREATE TABLE IF NOT EXISTS audit_logs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {PK_AUTOINC},
             timestamp TEXT NOT NULL,
             user_id TEXT NOT NULL,
             user_name TEXT NOT NULL,
@@ -128,7 +207,7 @@ def init_db():
             details TEXT DEFAULT ''
         );
         CREATE TABLE IF NOT EXISTS tf_tg_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {PK_AUTOINC},
             mois TEXT NOT NULL,
             annee INTEGER NOT NULL,
             heures_travaillees INTEGER DEFAULT 0,
@@ -138,7 +217,7 @@ def init_db():
             tg REAL DEFAULT 0.0
         );
         CREATE TABLE IF NOT EXISTS report_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {PK_AUTOINC},
             type TEXT NOT NULL,
             label TEXT NOT NULL,
             filename TEXT NOT NULL,
@@ -146,7 +225,7 @@ def init_db():
             generated_at TEXT NOT NULL
         );
         CREATE TABLE IF NOT EXISTS indicateur_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {PK_AUTOINC},
             ind_id TEXT NOT NULL,
             date TEXT NOT NULL,
             action TEXT NOT NULL,
@@ -290,7 +369,9 @@ def _seed(c):
         ('chantier', json.dumps({'taux_cloture_cible':80,'heures_trav_mois':10000})),
         ('baremes', json.dumps({'conforme':1.0,'nc_mineure':0.75,'nc_majeure':0.5,'nc_critique':0.0})),
     ]
-    c.executemany('INSERT OR REPLACE INTO settings VALUES (?,?)', default_settings)
+    c.executemany(
+        'INSERT INTO settings (cle,valeur) VALUES (?,?) ON CONFLICT (cle) DO UPDATE SET valeur=excluded.valeur',
+        default_settings)
 
 
 def _seed_tftg(c):
