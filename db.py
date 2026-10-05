@@ -12,6 +12,137 @@ if USE_POSTGRES:
 
 PK_AUTOINC = 'SERIAL PRIMARY KEY' if USE_POSTGRES else 'INTEGER PRIMARY KEY AUTOINCREMENT'
 
+# Référentiel officiel des 120 indicateurs QSSE (id, domaine, sous_theme, libelle)
+INDICATEURS_REF = [
+    ('ENV-01','ENV','Déchets',"Taux de conformité de la gestion des déchets"),
+    ('ENV-02','ENV','Déchets dangereux',"Taux d'aires de stockage de déchets dangereux conformes"),
+    ('ENV-03','ENV','Traçabilité déchets',"Taux de déchets dangereux tracés jusqu'à la filière agréée"),
+    ('ENV-04','ENV','Eaux usées',"Taux de dispositifs de collecte et traitement des eaux usées conformes"),
+    ('ENV-05','ENV','Effluents',"Taux d'analyses d'effluents conformes aux seuils applicables"),
+    ('ENV-06','ENV','Pollutions accidentelles',"Taux de déversements contenus et traités dans le délai"),
+    ('ENV-07','ENV','Poussières',"Taux de réalisation du programme d'arrosage ciblé"),
+    ('ENV-08','ENV','Bruit',"Taux de mesures acoustiques conformes"),
+    ('ENV-09','ENV','Émissions atmosphériques',"Taux d'engins et véhicules sans émission visible anormale"),
+    ('ENV-10','ENV','Hydrocarbures',"Taux de stockages d'hydrocarbures avec rétention conforme"),
+    ('ENV-11','ENV','Préparation antipollution',"Taux de zones à risque équipées de kits antipollution complets"),
+    ('ENV-12','ENV','Déclaration des incidents',"Taux d'incidents de pollution déclarés dans les délais"),
+    ('ENV-13','ENV','Carrières et emprunts',"Taux de sites d'extraction et dépôts conformes"),
+    ('ENV-14','ENV','Traçabilité des matériaux',"Taux de volumes provenant de sources autorisées"),
+    ('ENV-15','ENV','Réhabilitation',"Taux de sites d'emprunt et dépôts remis en état"),
+
+    ('QUA-01','QUAL','Laboratoire',"Taux de conformité des essais de laboratoire"),
+    ('QUA-02','QUAL','Métrologie',"Taux d'équipements de laboratoire étalonnés et validés"),
+    ('QUA-03','QUAL','Autocontrôles',"Taux d'exécution du programme d'autocontrôle"),
+    ('QUA-04','QUAL','Non-conformités',"Taux de non-conformités avec dossier de preuve complet"),
+    ('QUA-05','QUAL','Libération des lots',"Taux de lots libérés avec dossier de preuve complet"),
+    ('QUA-06','QUAL','Matériaux',"Taux de matériaux d'emprunt conformes"),
+    ('QUA-07','QUAL','Couche de forme',"Taux de couche de forme conformes au premier contrôle"),
+    ('QUA-08','QUAL','Couche de fondation',"Taux de couche de fondation conformes"),
+    ('QUA-09','QUAL','Couche de base',"Taux d'essais de compactage de couche de base conformes"),
+    ('QUA-10','QUAL','Enrobés',"Taux de lots d'enrobés conformes"),
+    ('QUA-11','QUAL','Traçabilité',"Taux d'échantillons entièrement traçables"),
+    ('QUA-12','QUAL',"Points d'arrêt","Taux de points d'arrêt levés dans le délai"),
+    ('QUA-13','QUAL','Implantation',"Taux d'implantations contrôlées avant exécution"),
+    ('QUA-14','QUAL','Géométrie',"Taux de points de planéité et nivellement conformes"),
+    ('QUA-15','QUAL','DOE et recollement',"Taux de pièces DOE/recollement disponibles à date"),
+
+    ('SST-01','HSE','Accidentologie',"Taux de fréquence des accidents avec arrêt"),
+    ('SST-02','HSE','Situations dangereuses',"Taux de situations dangereuses corrigées dans le délai"),
+    ('SST-03','HSE','EPI',"Taux de port conforme des EPI"),
+    ('SST-04','HSE','Signalisation temporaire',"Taux de dispositifs de balisage et signalisation conformes"),
+    ('SST-05','HSE','Plans de circulation',"Taux de zones avec trafic couvertes par un plan validé"),
+    ('SST-06','HSE','Analyse des risques',"Taux de tâches couvertes par une analyse de risques validée"),
+    ('SST-07','HSE','Permis de travail',"Taux de travaux à risque avec permis conformes"),
+    ('SST-08','HSE','Levage',"Taux d'opérations de levage conformes"),
+    ('SST-09','HSE','Urgence et secours',"Taux de moyens d'urgence opérationnels"),
+    ('SST-10','HSE','Compétences',"Taux de personnel accueilli, formé et habilité"),
+    ('SST-11','HSE','Interfaces trafic',"Taux de zones en coexistence effective des flux"),
+    ('SST-12','HSE','Accès secours',"Taux d'accès secours maintenus praticables"),
+    ('SST-13','HSE','Coactivité',"Taux de situations de coactivité maîtrisées"),
+    ('SST-14','HSE','Fin de poste',"Taux de zones laissées propres et sécurisées"),
+    ('SST-15','HSE','Ouverture de zone',"Taux d'ouvertures de zone formellement autorisées"),
+
+    ('TOP-01','TOPO','Implantation',"Taux d'implantations contrôlées avant exécution"),
+    ('TOP-02','TOPO','Réimplantation',"Taux de recalages acceptés au premier contrôle"),
+    ('TOP-03','TOPO','Altimétrie',"Taux de points altimétriques conformes"),
+    ('TOP-04','TOPO','Planimétrie',"Taux de points planimétriques conformes"),
+    ('TOP-05','TOPO','Planéité et nivellement',"Taux de sections de chaussée conformes en planéité/nivellement"),
+    ('TOP-06','TOPO','Drainage',"Taux de tronçons de fossés conformes en profil et pente"),
+    ('TOP-07','TOPO','Implantation OA',"Taux d'ouvrages hydrauliques/OA implantés conformes"),
+    ('TOP-08','TOPO','Recollement courant',"Taux de levés de recollement disponibles à date"),
+    ('TOP-09','TOPO','Contrôle préalable',"Taux de bétonnages/couches contrôlés avant exécution"),
+    ('TOP-10','TOPO','Profil en long',"Taux de profils en long conformes"),
+    ('TOP-11','TOPO','Profil en travers',"Taux de points de référence disponibles et sécurisés"),
+    ('TOP-12','TOPO','Canevas',"Taux de repères disponibles et sécurisés"),
+    ('TOP-13','TOPO','Cubatures',"Taux de cubatures contrôlées/validées"),
+    ('TOP-14','TOPO','Levés contradictoires',"Taux d'écarts contradictoires résolus dans le délai"),
+    ('TOP-15','TOPO','Recollement final',"Taux de levés de recollement final validé"),
+
+    ('SOC-01','SOC','Conformité RH',"Taux de travailleurs disposant d'un contrat écrit conforme"),
+    ('SOC-02','SOC','Protection sociale',"Taux de travailleurs déclarés à la CSS et à l'IPRES"),
+    ('SOC-03','SOC','Conditions de travail et base-vie',"Taux de critères sociaux et d'hébergement conformes"),
+    ('SOC-04','SOC','Sous-traitance',"Taux de sous-traitants intégrés au dispositif social QSSE"),
+    ('SOC-05','SOC','Emploi local',"Taux d'emploi local"),
+    ('SOC-06','SOC','Mécanisme de gestion des plaintes',"Taux de comités locaux de gestion des plaintes opérationnels"),
+    ('SOC-07','SOC','Plaintes — enregistrement',"Taux de plaintes enregistrées et accusées dans les 48h"),
+    ('SOC-08','SOC','Plaintes — traitement',"Taux de plaintes clôturées dans le délai prescrit"),
+    ('SOC-09','SOC','Plaintes — retour au plaignant',"Taux de plaintes clôturées avec preuve de retour"),
+    ('SOC-10','SOC','Libération des emprises',"Taux de dossiers de PAP finalisés"),
+    ('SOC-11','SOC','Conciliation',"Taux de PAP passées en commission de conciliation"),
+    ('SOC-12','SOC','Indemnisation',"Taux de PAP indemnisées avant occupation de l'emprise"),
+    ('SOC-13','SOC','Réinstallation',"Taux de ménages réinstallés dans des conditions conformes avant déplacement"),
+    ('SOC-14','SOC','Information et consultation',"Taux de réunions communautaires planifiées effectivement tenues"),
+    ('SOC-15','SOC','Accès et mobilité',"Taux d'accès provisoires riverains fonctionnels et sécurisés"),
+
+    ('OA-01','OA',"Points d'arrêt","Taux de points d'arrêt levés dans le délai"),
+    ('OA-02','OA','Implantation',"Taux d'implantations contrôlées avant exécution"),
+    ('OA-03','OA','Couche de substitution et fondations',"Taux de fondations contrôlées avant bétonnage"),
+    ('OA-04','OA','Ferraillage',"Taux de ferraillages contrôlés avant bétonnage"),
+    ('OA-05','OA','Coffrage et géométrie',"Taux de coffrages et géométries conformes"),
+    ('OA-06','OA','Bétonnage',"Taux de gâchées de béton conformes à la mise en œuvre"),
+    ('OA-07','OA','Résistance du béton',"Taux d'essais de résistance à 28 jours conformes"),
+    ('OA-08','OA','Cure et décoffrage',"Taux d'éléments respectant le protocole de cure et de décoffrage"),
+    ('OA-09','OA','Poutres et préfabriqués',"Taux d'opérations de transport et pose conformes"),
+    ('OA-10','OA',"Appareils d'appui","Taux d'appareils d'appui réceptionnés et posés conformes"),
+    ('OA-11','OA','Tablier et dalles',"Taux de dalles/tabliers conformes au premier contrôle"),
+    ('OA-12','OA','Étanchéité et drainage',"Taux de surfaces d'étanchéité et dispositifs de drainage conformes"),
+    ('OA-13','OA','Joints de chaussée',"Taux de joints de chaussée conformes"),
+    ('OA-14','OA','Accès et transition',"Taux de remblais d'accès et dalles de transition conformes"),
+    ('OA-15','OA','Non-conformités',"Taux de non-conformités OA clôturées dans le délai"),
+
+    ('GC-01','GC','Terrassements',"Taux d'avancement des terrassements"),
+    ('GC-02','GC','Assainissement',"Taux d'avancement du drainage et de l'assainissement"),
+    ('GC-03','GC','Couches de chaussée',"Taux d'avancement des couches de forme, fondation et base"),
+    ('GC-04','GC','Revêtement bitumineux',"Taux d'avancement des revêtements bitumineux"),
+    ('GC-05','GC','Pilotage production',"Taux de réalisation globale du programme hebdomadaire"),
+    ('GC-06','GC','Préavis',"Taux de fronts ouverts avec tous les préavis levés"),
+    ('GC-07','GC','Terrassements',"Taux de lots de terrassement conformes au premier contrôle"),
+    ('GC-08','GC','Matériaux',"Taux de sources et matériaux agréés avant emploi"),
+    ('GC-09','GC','Compactage',"Taux de lots de compactage conformes"),
+    ('GC-10','GC','Géométrie',"Taux de contrôles géométriques et altimétriques conformes"),
+    ('GC-11','GC','Assainissement',"Taux de tronçons d'assainissement conformes au premier contrôle"),
+    ('GC-12','GC','Enrobés',"Taux de lots d'enrobés conformes"),
+    ('GC-13','GC','Reprises techniques',"Taux de travaux acceptés sans reprise"),
+    ('GC-14','GC',"Points d'arrêt","Taux de points d'arrêt levés dans le délai"),
+    ('GC-15','GC','Finitions et libération',"Taux de sections achevées réceptionnées et sécurisées"),
+
+    ('GEO-01','GEO',"Études d'exécution","Taux d'études géotechniques approuvées avant travaux"),
+    ('GEO-02','GEO',"Matériaux d'emprunt","Taux de lots de matériaux d'emprunt agréés"),
+    ('GEO-03','GEO','Essais Proctor',"Taux d'essais Proctor validés avant mise en œuvre"),
+    ('GEO-04','GEO','Densité en place',"Taux de densité en place conformes"),
+    ('GEO-05','GEO','Portance in situ',"Taux de portance in situ conformes"),
+    ('GEO-06','GEO',"Programme d'essais","Taux d'exécution du programme d'essais géotechniques"),
+    ('GEO-07','GEO','Résultats du laboratoire',"Taux de résultats de laboratoire validés dans le délai"),
+    ('GEO-08','GEO','Validations des couches',"Taux de couches validées avant recouvrement"),
+    ('GEO-09','GEO','Non-conformités',"Taux de non-conformités géotechniques traitées dans le délai"),
+    ('GEO-10','GEO','Traçabilité des sources',"Taux de matériaux entièrement tracés jusqu'à la source"),
+    ('GEO-11','GEO','Conformité aux exigences',"Taux de couches conformes au premier contrôle"),
+    ('GEO-12','GEO','Réaction aux essais non conformes',"Taux d'essais non conformes avec action corrective déclenchée"),
+    ('GEO-13','GEO','Reprises',"Taux de reprises géotechniques acceptées sans recontrôle"),
+    ('GEO-14','GEO','Validations',"Taux de zones géotechniques validées avant exécution dans les zones sensibles"),
+    ('GEO-15','GEO','Zones sensibles',"Taux de zones géotechniques sensibles sous surveillance renforcée"),
+]
+
 
 class Row(dict):
     """dict that also supports positional access, like sqlite3.Row (row[0])."""
@@ -287,53 +418,16 @@ def _seed(c):
     ]
     c.executemany('INSERT INTO users VALUES (?,?,?,?,?,?,?,?,?,?)', users)
 
-    # id, domaine, zone, libelle, bloquant, reglementaire, statut, score, points_risque, rang, impact, poids
+    # Référentiel officiel des 120 indicateurs QSSE — statut 'na' (non encore évalué), à alimenter via Saisie terrain
     indicateurs = [
-        ('HSE-01','HSE','Zone B','Port EPI obligatoire',1,1,'nc_critique',0.0,3,1,'Élevé',3.0),
-        ('OA-07','OA','Zone A','Contrôle ferraillage P3',1,1,'nc_critique',0.0,3,2,'Élevé',3.5),
-        ('HSE-04','HSE','Zone B','Plan de prévention à jour',0,1,'nc_majeure',0.5,2,3,'Élevé',2.5),
-        ('ENV-02','ENV','Zone D','Gestion déchets liquides',0,1,'nc_majeure',0.5,2,4,'Moyen',2.0),
-        ('QUA-03','QUAL','Zone A','Bétonnage conforme DOS',1,0,'nc_mineure',0.75,1,5,'Élevé',2.0),
-        ('GC-05','GC','Zone C','Compactage couche 2',0,0,'nc_mineure',0.75,1,6,'Moyen',1.5),
-        ('WX-01','WX','Zone A','Suivi vents critiques',1,0,'nc_mineure',0.75,1,7,'Élevé',2.0),
-        ('HSE-12','HSE','Zone A','Formation secouristes à jour',0,1,'nc_mineure',0.75,1,8,'Élevé',1.5),
-        ('TOPO-01','TOPO','Zone A','Implantation axes OK',0,0,'conforme',1.0,0,None,'Élevé',2.0),
-        ('GEO-02','GEO','Zone C','Essais pressiométriques',0,0,'conforme',1.0,0,None,'Moyen',1.5),
-        ('QUAL-01','QUAL','Zone B','Plan qualité validé',0,0,'conforme',1.0,0,None,'Élevé',2.0),
-        ('GC-01','GC','Zone A','Compactage couche 1',0,0,'conforme',1.0,0,None,'Moyen',1.5),
-        ('OA-01','OA','Zone A',"Plans d'exécution approuvés",0,0,'conforme',1.0,0,None,'Élevé',2.5),
-        ('HSE-02','HSE','Zone A','Balisage chantier conforme',0,1,'conforme',1.0,0,None,'Moyen',1.5),
-        ('HSE-03','HSE','Zone D','Registre médical à jour',0,1,'na',None,0,None,'Moyen',1.5),
-        ('WX-03','WX','Zone D','Protocole gel/verglas',0,0,'na',None,0,None,'Moyen',1.0),
+        (ref_id, domaine, '', libelle, 0, 0, 'na', None, 0, None, 'Moyen', 1.0)
+        for ref_id, domaine, _sous_theme, libelle in INDICATEURS_REF
     ]
     c.executemany('INSERT INTO indicateurs (id,domaine,zone,libelle,bloquant,reglementaire,statut,score,points_risque,rang,impact,poids) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', indicateurs)
-
-    observations = [
-        ('HSE-01','25/04/25','nc_critique',0.0,'M. Diallo','Harnais non homologués Zone B'),
-        ('HSE-01','18/04/25','nc_critique',0.0,'S. Martin','3 agents sans harnais'),
-        ('HSE-01','11/04/25','nc_mineure',0.75,'R. Koné','1 harnais périmé'),
-        ('HSE-01','04/04/25','conforme',1.0,'M. Diallo',''),
-        ('HSE-01','28/03/25','conforme',1.0,'S. Martin',''),
-        ('OA-07','24/04/25','nc_critique',0.0,'F. Traoré','Ferraillage non conforme pylône P3'),
-        ('OA-07','17/04/25','nc_majeure',0.5,'M. Diallo','Diamètre insuffisant'),
-        ('OA-07','10/04/25','conforme',1.0,'F. Traoré',''),
-        ('OA-07','03/04/25','conforme',1.0,'M. Diallo',''),
-    ]
     c.executemany(
-        'INSERT INTO observations (indicateur_id,date,statut,score,observateur,commentaire) VALUES (?,?,?,?,?,?)',
-        observations)
-
-    actions = [
-        ('ACT-001','HSE-01','Remplacement harnais non conformes Zone B','HSE','S. Martin','2025-05-01',30,'ouverte','critique','2025-04-29'),
-        ('ACT-002','OA-07','Contrôle bétonnage coffrage pylône P3','OA','M. Diallo','2025-05-03',45,'en_cours','critique','2025-04-29'),
-        ('ACT-003','HSE-04','Mise à jour plan prévention section C','HSE','R. Koné','2025-05-05',80,'en_cours','majeure','2025-04-25'),
-        ('ACT-004','ENV-02','Bacs de rétention Zone D','ENV','A. Dupont','2025-05-07',60,'en_cours','majeure','2025-04-25'),
-        ('ACT-005','QUA-03','Vérification dosage béton','QUAL','F. Traoré','2025-05-10',20,'ouverte','mineure','2025-04-25'),
-        ('ACT-006','GC-05','Essais Proctor section B','GC','L. Sy','2025-05-12',10,'ouverte','mineure','2025-04-25'),
-        ('ACT-007','HSE-09','Renouvellement permis de feu Zone C','HSE','S. Martin','2025-04-28',0,'ouverte','majeure','2025-04-20'),
-        ('ACT-008','WX-01','Protocole arrêt vents >60 km/h','WX','D. Ndiaye','2025-04-25',0,'ouverte','critique','2025-04-20'),
-    ]
-    c.executemany('INSERT INTO actions (id,source_id,libelle,domaine,responsable,delai,avancement,statut,priorite,date_creation) VALUES (?,?,?,?,?,?,?,?,?,?)', actions)
+        'UPDATE indicateurs SET sous_theme=? WHERE id=?',
+        [(sous_theme, ref_id) for ref_id, _domaine, sous_theme, _libelle in INDICATEURS_REF]
+    )
 
     incidents = [
         ('INC-001','2025-04-29','Zone B','HSE','grave',3,'Chute de hauteur — échafaudage','Défaut harnais','S. Martin','investigation'),
@@ -345,22 +439,9 @@ def _seed(c):
     c.executemany('INSERT INTO incidents (id,date,zone,type,gravite,jours_arret,description,cause,responsable,statut) VALUES (?,?,?,?,?,?,?,?,?,?)', incidents)
 
     notifs = [
-        ('danger','NC critique bloquante — HSE-01','Port EPI · Zone B · J+0','il y a 2h',0),
-        ('danger','Score 8D = 61.2 — Seuil alerte atteint','Intervention immédiate requise','il y a 4h',0),
-        ('warning','7 actions en retard détectées','Revue avec responsables requise','ce matin 8h',0),
-        ('info','Revue hebdomadaire envoyée','Semaine 17 — direction + QSSE','ven. 16h',1),
-        ('warning','Incident grave déclaré — Zone B','Chute de hauteur · 3 jours arrêt','29/04',1),
+        ('info','Référentiel QSSE initialisé','120 indicateurs chargés — à évaluer via Saisie terrain','maintenant',0),
     ]
     c.executemany('INSERT INTO notifications (niveau,titre,message,time_label,lue) VALUES (?,?,?,?,?)', notifs)
-
-    revue_hist = [
-        ('30/04/2025',61.2,78.4,34,'rouge','STOP — Intervention immédiate','J. Diallo'),
-        ('23/04/2025',66.1,80.2,28,'orange','Alerte — Plan renforcé 48h','J. Diallo'),
-        ('16/04/2025',71.8,83.5,21,'vert','Poursuite normale','J. Diallo'),
-    ]
-    c.executemany(
-        'INSERT INTO revue_history (date,score_8d,indice,risque,feu,decision,validateur) VALUES (?,?,?,?,?,?,?)',
-        revue_hist)
 
     default_settings = [
         ('revue_scores', json.dumps({'perf':78,'risque':66,'crit':41,'cloture':52,'arb':55})),

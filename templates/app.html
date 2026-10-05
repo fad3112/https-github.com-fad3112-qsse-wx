@@ -223,7 +223,7 @@
     <button class="btn btn-sm" id="FBT-nc_majeure" onclick="setFilt('nc_majeure')"><span class="b b-a">NC maj.</span>&nbsp;<span id="CNT-nc_majeure">—</span></button>
     <button class="btn btn-sm" id="FBT-nc_mineure" onclick="setFilt('nc_mineure')"><span class="b b-w">NC min.</span>&nbsp;<span id="CNT-nc_mineure">—</span></button>
     <button class="btn btn-sm" id="FBT-conforme" onclick="setFilt('conforme')"><span class="b b-ok">Conf.</span>&nbsp;<span id="CNT-conforme">—</span></button>
-    <select id="DOMF" class="fsel" onchange="renderInd()"><option value="">Tous domaines</option><option>HSE</option><option>QUAL</option><option>OA</option><option>GC</option><option>ENV</option><option>TOPO</option><option>GEO</option><option>WX</option></select>
+    <select id="DOMF" class="fsel" onchange="renderInd()"><option value="">Tous domaines</option><option>HSE</option><option>QUAL</option><option>OA</option><option>GC</option><option>ENV</option><option>TOPO</option><option>GEO</option><option>SOC</option></select>
     <input id="SRCH" type="text" class="finp" placeholder="Rechercher..." oninput="renderInd()" style="width:130px">
     <span id="IND-CNT" style="font-size:11px;color:var(--color-text-secondary);margin-left:auto">—</span>
     <button class="btn btn-p btn-sm" onclick="goTo('saisie','Saisie terrain')"><i class="ti ti-plus"></i>Saisir obs.</button>
@@ -783,7 +783,7 @@
     <div class="fg"><label class="fl" data-i18n="lbl.source_indicator">Indicateur source</label><select class="fc" id="NA-SRC"><option value="">— Sélectionner —</option></select></div>
     <div class="fg"><label class="fl" data-i18n="lbl.action_label">Libellé de l'action *</label><input class="fc" type="text" id="NA-LIB" placeholder="Décrire l'action corrective..."></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="fg"><label class="fl" data-i18n="lbl.domain">Domaine *</label><select class="fc" id="NA-DOM"><option value="">Choisir...</option><option>HSE</option><option>QUAL</option><option>OA</option><option>GC</option><option>ENV</option><option>WX</option></select></div>
+      <div class="fg"><label class="fl" data-i18n="lbl.domain">Domaine *</label><select class="fc" id="NA-DOM"><option value="">Choisir...</option><option>HSE</option><option>QUAL</option><option>OA</option><option>GC</option><option>ENV</option><option>TOPO</option><option>GEO</option><option>SOC</option></select></div>
       <div class="fg"><label class="fl" data-i18n="lbl.responsible">Responsable *</label><select class="fc" id="NA-RESP"><option value="">Choisir...</option><option>S. Martin</option><option>M. Diallo</option><option>R. Koné</option><option>A. Dupont</option><option>F. Traoré</option><option>L. Sy</option></select></div>
       <div class="fg" style="margin-bottom:0"><label class="fl" data-i18n="lbl.target_deadline">Délai cible *</label><input class="fc" type="date" id="NA-DEL"></div>
       <div class="fg" style="margin-bottom:0"><label class="fl" data-i18n="lbl.priority">Priorité</label><select class="fc" id="NA-PRIO"><option value="critique">Critique</option><option value="majeure">Majeure</option><option value="mineure">Mineure</option></select></div>

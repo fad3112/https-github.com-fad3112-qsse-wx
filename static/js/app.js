@@ -1,7 +1,7 @@
 'use strict';
 
 // ── CONSTANTS ────────────────────────────────────────────────────
-const DC  = {HSE:'#A32D2D',QUAL:'#185FA5',OA:'#7b3fa0',GC:'#3B6D11',ENV:'#177a6a',TOPO:'#BA7517',GEO:'#8b5a2b',WX:'#1a4fa8'};
+const DC  = {HSE:'#A32D2D',QUAL:'#185FA5',OA:'#7b3fa0',GC:'#3B6D11',ENV:'#177a6a',TOPO:'#BA7517',GEO:'#8b5a2b',SOC:'#B8860B',WX:'#1a4fa8'};
 const STC = {nc_critique:{l:'NC critique',b:'b-r',c:'#A32D2D'},nc_majeure:{l:'NC majeure',b:'b-a',c:'#854F0B'},nc_mineure:{l:'NC mineure',b:'b-w',c:'#BA7517'},conforme:{l:'Conforme',b:'b-ok',c:'#3B6D11'},na:{l:'N/A',b:'b-n',c:'#6b7591'}};
 const PRC = {critique:'b-r',majeure:'b-a',mineure:'b-w'};
 const GRC = {grave:'b-r',modere:'b-a',mineur:'b-w'};
