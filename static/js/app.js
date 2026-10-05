@@ -664,8 +664,8 @@ const STO_COL = {
 function buildSaisieSelect() {
   const sel = document.getElementById('OBS-IND');
   if (!sel) return;
-  sel.innerHTML = IND.filter(i => i.statut !== 'na').map(i =>
-    `<option value="${i.id}">${i.id} — ${i.libelle} (${i.zone})</option>`
+  sel.innerHTML = IND.map(i =>
+    `<option value="${i.id}">${i.id} — ${i.libelle}${i.zone ? ' (' + i.zone + ')' : ''}</option>`
   ).join('');
   const naSrc = document.getElementById('NA-SRC');
   if (naSrc) {
